@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Popover } from "@/components/ui/popover";
 import { api, type ClaudeVersionStatus } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { useTranslation } from 'react-i18next';
 
 interface TopbarProps {
   /**
@@ -54,6 +55,7 @@ export const Topbar: React.FC<TopbarProps> = ({
 }) => {
   const [versionStatus, setVersionStatus] = useState<ClaudeVersionStatus | null>(null);
   const [checking, setChecking] = useState(true);
+  const { t } = useTranslation();
   
   // Check Claude version on mount
   useEffect(() => {
@@ -87,7 +89,7 @@ export const Topbar: React.FC<TopbarProps> = ({
       return (
         <div className="flex items-center space-x-2 text-xs">
           <Circle className="h-3 w-3 animate-pulse text-muted-foreground" />
-          <span className="text-muted-foreground">Checking...</span>
+          <span className="text-muted-foreground">{t('topbar.checking')}</span>
         </div>
       );
     }
@@ -112,8 +114,8 @@ export const Topbar: React.FC<TopbarProps> = ({
           />
           <span>
             {versionStatus.is_installed && versionStatus.version
-              ? `Claude Code v${versionStatus.version}`
-              : "Claude Code"}
+              ? t('topbar.claude_code_version', { version: versionStatus.version })
+              : t('topbar.claude_code')}
           </span>
         </div>
       </Button>
@@ -125,7 +127,7 @@ export const Topbar: React.FC<TopbarProps> = ({
           trigger={statusContent}
           content={
             <div className="space-y-3 max-w-xs">
-              <p className="text-sm font-medium">Claude Code not found</p>
+              <p className="text-sm font-medium">{t('topbar.not_found')}</p>
               <div className="rounded-md bg-muted p-3">
                 <pre className="text-xs font-mono whitespace-pre-wrap">
                   {versionStatus.output}
@@ -137,7 +139,7 @@ export const Topbar: React.FC<TopbarProps> = ({
                 className="w-full"
                 onClick={onSettingsClick}
               >
-                Select Claude Installation
+                {t('topbar.select_installation')}
               </Button>
               <a
                 href="https://www.anthropic.com/claude-code"
@@ -145,7 +147,7 @@ export const Topbar: React.FC<TopbarProps> = ({
                 rel="noopener noreferrer"
                 className="flex items-center space-x-1 text-xs text-primary hover:underline"
               >
-                <span>Install Claude Code</span>
+                <span>{t('topbar.install_claude')}</span>
                 <ExternalLink className="h-3 w-3" />
               </a>
             </div>
@@ -180,7 +182,7 @@ export const Topbar: React.FC<TopbarProps> = ({
           className="text-xs"
         >
           <BarChart3 className="mr-2 h-3 w-3" />
-          Usage Dashboard
+          {t('topbar.usage_dashboard')}
         </Button>
         
         <Button
@@ -190,7 +192,7 @@ export const Topbar: React.FC<TopbarProps> = ({
           className="text-xs"
         >
           <FileText className="mr-2 h-3 w-3" />
-          CLAUDE.md
+          {t('topbar.claude_md')}
         </Button>
         
         <Button
@@ -200,7 +202,7 @@ export const Topbar: React.FC<TopbarProps> = ({
           className="text-xs"
         >
           <Network className="mr-2 h-3 w-3" />
-          MCP
+          {t('topbar.mcp')}
         </Button>
         
         <Button
@@ -210,7 +212,7 @@ export const Topbar: React.FC<TopbarProps> = ({
           className="text-xs"
         >
           <Settings className="mr-2 h-3 w-3" />
-          Settings
+          {t('topbar.settings')}
         </Button>
         
         <Button
@@ -218,7 +220,7 @@ export const Topbar: React.FC<TopbarProps> = ({
           size="icon"
           onClick={onInfoClick}
           className="h-8 w-8"
-          title="About"
+          title={t('topbar.about')}
         >
           <Info className="h-4 w-4" />
         </Button>

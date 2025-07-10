@@ -145,6 +145,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 /**
  * Icon categories for better organization
@@ -331,6 +332,7 @@ export const IconPicker: React.FC<IconPickerProps> = ({
   isOpen,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [hoveredIcon, setHoveredIcon] = useState<string | null>(null);
 
@@ -368,7 +370,7 @@ export const IconPicker: React.FC<IconPickerProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[80vh] p-0">
         <DialogHeader className="px-6 py-4 border-b">
-          <DialogTitle>Choose an icon</DialogTitle>
+          <DialogTitle>{t('icon_picker.choose_icon')}</DialogTitle>
         </DialogHeader>
 
         {/* Search Bar */}
@@ -376,7 +378,7 @@ export const IconPicker: React.FC<IconPickerProps> = ({
           <div className="relative">
             <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search icons..."
+              placeholder={t('icon_picker.search_placeholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -390,7 +392,7 @@ export const IconPicker: React.FC<IconPickerProps> = ({
           {Object.keys(filteredCategories).length === 0 ? (
             <div className="flex flex-col items-center justify-center h-32 text-center">
               <p className="text-sm text-muted-foreground">
-                No icons found for "{searchQuery}"
+                {t('icon_picker.no_icons_found', { query: searchQuery })}
               </p>
             </div>
           ) : (
@@ -444,7 +446,7 @@ export const IconPicker: React.FC<IconPickerProps> = ({
         {/* Footer */}
         <div className="px-6 py-3 border-t bg-muted/50">
           <p className="text-xs text-muted-foreground text-center">
-            Click an icon to select • {allIcons.length} icons available
+            {t('icon_picker.footer', { count: allIcons.length })}
           </p>
         </div>
       </DialogContent>

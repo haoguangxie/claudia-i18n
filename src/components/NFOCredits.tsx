@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import asteriskLogo from "@/assets/nfo/asterisk-logo.png";
 import keygennMusic from "@/assets/nfo/claudia-nfo.ogg";
+import { useTranslation } from 'react-i18next';
 
 interface NFOCreditsProps {
   /**
@@ -22,6 +23,7 @@ interface NFOCreditsProps {
  * <NFOCredits onClose={() => setShowNFO(false)} />
  */
 export const NFOCredits: React.FC<NFOCreditsProps> = ({ onClose }) => {
+  const { t } = useTranslation();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [isMuted, setIsMuted] = useState(false);
@@ -84,37 +86,31 @@ export const NFOCredits: React.FC<NFOCreditsProps> = ({ onClose }) => {
   
   // Credits content
   const creditsContent = [
-    { type: "header", text: "CLAUDIA v0.1.0" },
-    { type: "subheader", text: "[ A STRATEGIC PROJECT BY ASTERISK ]" },
+    { type: "header", text: t('nfo_credits.version') },
+    { type: "subheader", text: t('nfo_credits.project_by') },
     { type: "spacer" },
-    { type: "section", title: "━━━ CREDITS ━━━" },
-    { type: "credit", role: "POWERED BY", name: "Anthropic Claude 4" },
-    { type: "credit", role: "CLAUDE CODE", name: "The Ultimate Coding Assistant" },
-    { type: "credit", role: "MCP PROTOCOL", name: "Model Context Protocol" },
+    { type: "section", title: t('nfo_credits.credits_section') },
+    { type: "credit", role: t('nfo_credits.powered_by'), name: "Anthropic Claude 4" },
+    { type: "credit", role: t('nfo_credits.claude_code'), name: t('nfo_credits.claude_code_desc') },
+    { type: "credit", role: t('nfo_credits.mcp_protocol'), name: t('nfo_credits.mcp_protocol_desc') },
     { type: "spacer" },
-    { type: "section", title: "━━━ DEPENDENCIES ━━━" },
-    { type: "credit", role: "RUNTIME", name: "Tauri Framework" },
-    { type: "credit", role: "UI FRAMEWORK", name: "React + TypeScript" },
-    { type: "credit", role: "STYLING", name: "Tailwind CSS + shadcn/ui" },
-    { type: "credit", role: "ANIMATIONS", name: "Framer Motion" },
-    { type: "credit", role: "BUILD TOOL", name: "Vite" },
-    { type: "credit", role: "PACKAGE MANAGER", name: "Bun" },
+    { type: "section", title: t('nfo_credits.dependencies_section') },
+    { type: "credit", role: t('nfo_credits.runtime'), name: "Tauri Framework" },
+    { type: "credit", role: t('nfo_credits.ui_framework'), name: "React + TypeScript" },
+    { type: "credit", role: t('nfo_credits.styling'), name: "Tailwind CSS + shadcn/ui" },
+    { type: "credit", role: t('nfo_credits.animations'), name: "Framer Motion" },
+    { type: "credit", role: t('nfo_credits.build_tool'), name: "Vite" },
+    { type: "credit", role: t('nfo_credits.package_manager'), name: "Bun" },
     { type: "spacer" },
-    { type: "section", title: "━━━ SPECIAL THANKS ━━━" },
-    { type: "text", content: "To the open source community" },
-    { type: "text", content: "To all the beta testers" },
-    { type: "text", content: "To everyone who believed in this project" },
+    { type: "section", title: t('nfo_credits.special_thanks_section') },
+    { type: "text", content: t('nfo_credits.thanks_oss') },
+    { type: "text", content: t('nfo_credits.thanks_testers') },
+    { type: "text", content: t('nfo_credits.thanks_believers') },
     { type: "spacer" },
-    { type: "ascii", content: `
-     ▄▄▄· .▄▄ · ▄▄▄▄▄▄▄▄ .▄▄▄  ▪  .▄▄ · ▄ •▄ 
-    ▐█ ▀█ ▐█ ▀. •██  ▀▄.▀·▀▄ █·██ ▐█ ▀. █▌▄▌▪
-    ▄█▀▀█ ▄▀▀▀█▄ ▐█.▪▐▀▀▪▄▐▀▀▄ ▐█·▄▀▀▀█▄▐▀▀▄·
-    ▐█ ▪▐▌▐█▄▪▐█ ▐█▌·▐█▄▄▌▐█•█▌▐█▌▐█▄▪▐█▐█.█▌
-     ▀  ▀  ▀▀▀▀  ▀▀▀  ▀▀▀ .▀  ▀▀▀▀ ▀▀▀▀ ·▀  ▀
-    ` },
+    { type: "ascii", content: `\n     ▄▄▄· .▄▄ · ▄▄▄▄▄▄▄▄ .▄▄▄  ▪  .▄▄ · ▄ •▄ \n    ▐█ ▀█ ▐█ ▀. •██  ▀▄.▀·▀▄ █·██ ▐█ ▀. █▌▄▌▪\n    ▄█▀▀█ ▄▀▀▀█▄ ▐█.▪▐▀▀▪▄▐▀▀▄ ▐█·▄▀▀▀█▄▐▀▀▄·\n    ▐█ ▪▐▌▐█▄▪▐█ ▐█▌·▐█▄▄▌▐█•█▌▐█▌▐█▄▪▐█▐█.█▌\n     ▀  ▀  ▀▀▀▀  ▀▀▀  ▀▀▀ .▀  ▀▀▀▀ ▀▀▀▀ ·▀  ▀\n    ` },
     { type: "spacer" },
-    { type: "text", content: "Remember: Sharing is caring!" },
-    { type: "text", content: "Support the developers!" },
+    { type: "text", content: t('nfo_credits.sharing_is_caring') },
+    { type: "text", content: t('nfo_credits.support_devs') },
     { type: "spacer" },
     { type: "spacer" },
     { type: "spacer" },
@@ -147,7 +143,7 @@ export const NFOCredits: React.FC<NFOCreditsProps> = ({ onClose }) => {
             <div className="flex items-center justify-between px-4 py-2 bg-card border-b border-border">
               <div className="flex items-center space-x-2">
                 <div className="text-sm font-bold tracking-wider font-mono text-foreground">
-                  CLAUDIA.NFO
+                  {t('nfo_credits.nfo_title')}
                 </div>
               </div>
               <div className="flex items-center space-x-2">
@@ -159,10 +155,10 @@ export const NFOCredits: React.FC<NFOCreditsProps> = ({ onClose }) => {
                     await openUrl("https://github.com/getAsterisk/claudia/issues/new");
                   }}
                   className="flex items-center gap-1 h-auto px-2 py-1"
-                  title="File a bug"
+                  title={t('nfo_credits.file_a_bug')}
                 >
                   <Github className="h-3 w-3" />
-                  <span className="text-xs">File a bug</span>
+                  <span className="text-xs">{t('nfo_credits.file_a_bug')}</span>
                 </Button>
                 <Button
                   variant="ghost"
@@ -207,7 +203,7 @@ export const NFOCredits: React.FC<NFOCreditsProps> = ({ onClose }) => {
                   />
                 </button>
                 <div className="text-muted-foreground text-sm font-mono mt-2 tracking-wider">
-                  A strategic project by Asterisk
+                  {t('nfo_credits.project_by')}
                 </div>
               </div>
               

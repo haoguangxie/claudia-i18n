@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/label";
 import { api, type Checkpoint, type TimelineNode, type SessionTimeline, type CheckpointDiff } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
+import { useTranslation } from 'react-i18next';
 
 interface TimelineNavigatorProps {
   sessionId: string;
@@ -61,6 +62,7 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [diff, setDiff] = useState<CheckpointDiff | null>(null);
   const [compareCheckpoint, setCompareCheckpoint] = useState<Checkpoint | null>(null);
+  const { t } = useTranslation();
 
   // Load timeline on mount and whenever refreshVersion bumps
   useEffect(() => {
@@ -260,7 +262,7 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     {isCurrent && (
-                      <Badge variant="default" className="text-xs">Current</Badge>
+                      <Badge variant="default" className="text-xs">{t('timeline.current')}</Badge>
                     )}
                     <span className="text-xs font-mono text-muted-foreground">
                       {node.checkpoint.id.slice(0, 8)}
@@ -275,17 +277,17 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
                   )}
                   
                   <p className="text-xs text-muted-foreground line-clamp-2">
-                    {node.checkpoint.metadata.userPrompt || "No prompt"}
+                    {node.checkpoint.metadata.userPrompt || t('timeline.no_prompt')}
                   </p>
                   
                   <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <Hash className="h-3 w-3" />
-                      {node.checkpoint.metadata.totalTokens.toLocaleString()} tokens
+                      {node.checkpoint.metadata.totalTokens.toLocaleString()} {t('timeline.tokens')}
                     </span>
                     <span className="flex items-center gap-1">
                       <FileCode className="h-3 w-3" />
-                      {node.checkpoint.metadata.fileChanges} files
+                      {node.checkpoint.metadata.fileChanges} {t('timeline.files')}
                     </span>
                   </div>
                 </div>
@@ -307,7 +309,7 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
                           <RotateCcw className="h-3 w-3" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Restore to this checkpoint</TooltipContent>
+                      <TooltipContent>{t('timeline.restore_to_checkpoint')}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                   
@@ -326,7 +328,7 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
                           <GitFork className="h-3 w-3" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Fork from this checkpoint</TooltipContent>
+                      <TooltipContent>{t('timeline.fork_from_checkpoint')}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                   
@@ -345,7 +347,7 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
                           <Diff className="h-3 w-3" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Compare with another checkpoint</TooltipContent>
+                      <TooltipContent>{t('timeline.compare_with_checkpoint')}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>
@@ -381,9 +383,9 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
         <div className="flex items-start gap-2">
           <AlertCircle className="h-4 w-4 text-yellow-600 mt-0.5" />
           <div className="text-xs">
-            <p className="font-medium text-yellow-600">Experimental Feature</p>
+            <p className="font-medium text-yellow-600">{t('timeline.experimental_feature')}</p>
             <p className="text-yellow-600/80">
-              Checkpointing may affect directory structure or cause data loss. Use with caution.
+              {t('timeline.experimental_feature_desc')}
             </p>
           </div>
         </div>
@@ -393,10 +395,10 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <GitBranch className="h-5 w-5 text-muted-foreground" />
-          <h3 className="text-sm font-medium">Timeline</h3>
+          <h3 className="text-sm font-medium">{t('timeline.title')}</h3>
           {timeline && (
             <Badge variant="outline" className="text-xs">
-              {timeline.totalCheckpoints} checkpoints
+              {t('timeline.total_checkpoints', { count: timeline.totalCheckpoints })}
             </Badge>
           )}
         </div>
@@ -408,7 +410,7 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
           disabled={isLoading}
         >
           <Save className="h-3 w-3 mr-1" />
-          Checkpoint
+          {t('timeline.create_checkpoint_btn')}
         </Button>
       </div>
       
@@ -427,7 +429,7 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
         </div>
       ) : (
         <div className="text-center py-8 text-sm text-muted-foreground">
-          {isLoading ? "Loading timeline..." : "No checkpoints yet"}
+          {isLoading ? t('timeline.loading') : t('timeline.no_checkpoints')}
         </div>
       )}
       
@@ -435,18 +437,18 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create Checkpoint</DialogTitle>
+            <DialogTitle>{t('timeline.create_checkpoint')}</DialogTitle>
             <DialogDescription>
-              Save the current state of your session with an optional description.
+              {t('timeline.create_checkpoint_desc')}
             </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="description">Description (optional)</Label>
+              <Label htmlFor="description">{t('timeline.description_label')}</Label>
               <Input
                 id="description"
-                placeholder="e.g., Before major refactoring"
+                placeholder={t('timeline.description_placeholder')}
                 value={checkpointDescription}
                 onChange={(e) => setCheckpointDescription(e.target.value)}
                 onKeyPress={(e) => {
@@ -464,13 +466,13 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
               onClick={() => setShowCreateDialog(false)}
               disabled={isLoading}
             >
-              Cancel
+              {t('timeline.cancel')}
             </Button>
             <Button
               onClick={handleCreateCheckpoint}
               disabled={isLoading}
             >
-              Create Checkpoint
+              {t('timeline.create_checkpoint')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -480,10 +482,9 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
       <Dialog open={showDiffDialog} onOpenChange={setShowDiffDialog}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle>Checkpoint Comparison</DialogTitle>
+            <DialogTitle>{t('timeline.diff_title')}</DialogTitle>
             <DialogDescription>
-              Changes between "{selectedCheckpoint?.description || selectedCheckpoint?.id.slice(0, 8)}" 
-              and "{compareCheckpoint?.description || compareCheckpoint?.id.slice(0, 8)}"
+              {t('timeline.diff_desc', { from: selectedCheckpoint?.description || selectedCheckpoint?.id.slice(0, 8), to: compareCheckpoint?.description || compareCheckpoint?.id.slice(0, 8) })}
             </DialogDescription>
           </DialogHeader>
           
@@ -493,19 +494,19 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
               <div className="grid grid-cols-3 gap-4">
                 <Card>
                   <CardContent className="p-3">
-                    <div className="text-xs text-muted-foreground">Modified Files</div>
+                    <div className="text-xs text-muted-foreground">{t('timeline.modified_files')}</div>
                     <div className="text-2xl font-bold">{diff.modifiedFiles.length}</div>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardContent className="p-3">
-                    <div className="text-xs text-muted-foreground">Added Files</div>
+                    <div className="text-xs text-muted-foreground">{t('timeline.added_files')}</div>
                     <div className="text-2xl font-bold text-green-600">{diff.addedFiles.length}</div>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardContent className="p-3">
-                    <div className="text-xs text-muted-foreground">Deleted Files</div>
+                    <div className="text-xs text-muted-foreground">{t('timeline.deleted_files')}</div>
                     <div className="text-2xl font-bold text-red-600">{diff.deletedFiles.length}</div>
                   </CardContent>
                 </Card>
@@ -514,14 +515,14 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
               {/* Token delta */}
               <div className="flex items-center justify-center">
                 <Badge variant={diff.tokenDelta > 0 ? "default" : "secondary"}>
-                  {diff.tokenDelta > 0 ? "+" : ""}{diff.tokenDelta.toLocaleString()} tokens
+                  {diff.tokenDelta > 0 ? "+" : ""}{diff.tokenDelta.toLocaleString()} {t('timeline.tokens')}
                 </Badge>
               </div>
               
               {/* File lists */}
               {diff.modifiedFiles.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-medium mb-2">Modified Files</h4>
+                  <h4 className="text-sm font-medium mb-2">{t('timeline.modified_files')}</h4>
                   <div className="space-y-1">
                     {diff.modifiedFiles.map((file) => (
                       <div key={file.path} className="flex items-center justify-between text-xs">
@@ -538,7 +539,7 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
               
               {diff.addedFiles.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-medium mb-2">Added Files</h4>
+                  <h4 className="text-sm font-medium mb-2">{t('timeline.added_files')}</h4>
                   <div className="space-y-1">
                     {diff.addedFiles.map((file) => (
                       <div key={file} className="text-xs font-mono text-green-600">
@@ -551,7 +552,7 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
               
               {diff.deletedFiles.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-medium mb-2">Deleted Files</h4>
+                  <h4 className="text-sm font-medium mb-2">{t('timeline.deleted_files')}</h4>
                   <div className="space-y-1">
                     {diff.deletedFiles.map((file) => (
                       <div key={file} className="text-xs font-mono text-red-600">
@@ -573,7 +574,7 @@ export const TimelineNavigator: React.FC<TimelineNavigatorProps> = ({
                 setCompareCheckpoint(null);
               }}
             >
-              Close
+              {t('timeline.close')}
             </Button>
           </DialogFooter>
         </DialogContent>

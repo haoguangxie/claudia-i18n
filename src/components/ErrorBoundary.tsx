@@ -2,8 +2,9 @@ import React, { Component, ReactNode } from "react";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { withTranslation, WithTranslation } from 'react-i18next';
 
-interface ErrorBoundaryProps {
+interface ErrorBoundaryProps extends WithTranslation {
   children: ReactNode;
   fallback?: (error: Error, reset: () => void) => ReactNode;
 }
@@ -37,6 +38,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   };
 
   render() {
+    const { t } = this.props;
     if (this.state.hasError && this.state.error) {
       // Use custom fallback if provided
       if (this.props.fallback) {
@@ -51,14 +53,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               <div className="flex items-start gap-4">
                 <AlertCircle className="h-8 w-8 text-destructive flex-shrink-0 mt-0.5" />
                 <div className="flex-1 space-y-2">
-                  <h3 className="text-lg font-semibold">Something went wrong</h3>
+                  <h3 className="text-lg font-semibold">{t('error_boundary.something_wrong')}</h3>
                   <p className="text-sm text-muted-foreground">
-                    An error occurred while rendering this component.
+                    {t('error_boundary.render_error')}
                   </p>
                   {this.state.error.message && (
                     <details className="mt-2">
                       <summary className="text-sm cursor-pointer text-muted-foreground hover:text-foreground">
-                        Error details
+                        {t('error_boundary.error_details')}
                       </summary>
                       <pre className="mt-2 text-xs bg-muted p-2 rounded overflow-auto">
                         {this.state.error.message}
@@ -70,7 +72,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                     size="sm"
                     className="mt-4"
                   >
-                    Try again
+                    {t('error_boundary.try_again')}
                   </Button>
                 </div>
               </div>
@@ -82,4 +84,6 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
     return this.props.children;
   }
-} 
+}
+
+export const TranslatedErrorBoundary = withTranslation()(ErrorBoundary); 

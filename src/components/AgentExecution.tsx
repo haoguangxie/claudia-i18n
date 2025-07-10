@@ -36,6 +36,7 @@ import { ErrorBoundary } from "./ErrorBoundary";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { AGENT_ICONS } from "./CCAgents";
 import { HooksEditor } from "./HooksEditor";
+import { useTranslation } from 'react-i18next';
 
 interface AgentExecutionProps {
   /**
@@ -108,6 +109,8 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
   const unlistenRefs = useRef<UnlistenFn[]>([]);
   const elapsedTimeIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [runId, setRunId] = useState<number | null>(null);
+
+  const { t } = useTranslation();
 
   // Filter out messages that shouldn't be displayed
   const displayableMessages = React.useMemo(() => {
@@ -277,7 +280,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
       console.error("Failed to select directory:", err);
       // More detailed error logging
       const errorMessage = err instanceof Error ? err.message : String(err);
-      setError(`Failed to select directory: ${errorMessage}`);
+      setError(t('agent_execution.failed_to_select_directory', { error: errorMessage }));
     }
   };
 
@@ -325,14 +328,14 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
         setIsRunning(false);
         setExecutionStartTime(null);
         if (!event.payload) {
-          setError("Agent execution failed");
+          setError(t('agent_execution.agent_execution_failed'));
         }
       });
 
       const cancelUnlisten = await listen<boolean>(`agent-cancelled:${executionRunId}`, () => {
         setIsRunning(false);
         setExecutionStartTime(null);
-        setError("Agent execution was cancelled");
+        setError(t('agent_execution.agent_execution_cancelled'));
       });
 
       unlistenRefs.current = [outputUnlisten, errorUnlisten, completeUnlisten, cancelUnlisten];
@@ -346,7 +349,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
         type: "result",
         subtype: "error",
         is_error: true,
-        result: `Failed to execute agent: ${err instanceof Error ? err.message : 'Unknown error'}`,
+        result: t('agent_execution.failed_to_execute_agent', { error: err instanceof Error ? err.message : 'Unknown error' }),
         duration_ms: 0,
         usage: {
           input_tokens: 0,
@@ -385,7 +388,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
         type: "result",
         subtype: "error",
         is_error: true,
-        result: "Execution stopped by user",
+        result: t('agent_execution.execution_stopped_by_user'),
         duration_ms: elapsedTime * 1000,
         usage: {
           input_tokens: totalTokens,
@@ -403,7 +406,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
         type: "result",
         subtype: "error",
         is_error: true,
-        result: `Failed to stop execution: ${err instanceof Error ? err.message : 'Unknown error'}`,
+        result: t('agent_execution.failed_to_stop_execution', { error: err instanceof Error ? err.message : 'Unknown error' }),
         duration_ms: elapsedTime * 1000,
         usage: {
           input_tokens: totalTokens,
@@ -417,7 +420,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
     if (isRunning) {
       // Show confirmation dialog before navigating away during execution
       const shouldLeave = window.confirm(
-        "An agent is currently running. If you navigate away, the agent will continue running in the background. You can view running sessions in the 'Running Sessions' tab within CC Agents.\n\nDo you want to continue?"
+        t('agent_execution.leave_confirm')
       );
       if (!shouldLeave) {
         return;
@@ -537,9 +540,9 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                       {renderIcon()}
                     </div>
                     <div>
-                      <h1 className="text-xl font-bold">Execute: {agent.name}</h1>
+                      <h1 className="text-xl font-bold">{t('agent_execution.execute_title', { name: agent.name })}</h1>
                       <p className="text-sm text-muted-foreground">
-                        {model === 'opus' ? 'Claude 4 Opus' : 'Claude 4 Sonnet'}
+                        {model === 'opus' ? t('agent_execution.claude_4_opus') : t('agent_execution.claude_4_sonnet')}
                       </p>
                     </div>
                   </div>
@@ -552,7 +555,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                     disabled={messages.length === 0}
                   >
                     <Maximize2 className="h-4 w-4 mr-2" />
-                    Fullscreen
+                    {t('agent_execution.fullscreen')}
                   </Button>
                 </div>
               </div>
@@ -577,12 +580,12 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
 
             {/* Project Path */}
             <div className="space-y-2">
-              <Label>Project Path</Label>
+              <Label>{t('agent_execution.project_path')}</Label>
               <div className="flex gap-2">
                 <Input
                   value={projectPath}
                   onChange={(e) => setProjectPath(e.target.value)}
-                  placeholder="Select or enter project path"
+                  placeholder={t('agent_execution.project_path_placeholder')}
                   disabled={isRunning}
                   className="flex-1"
                 />
@@ -598,17 +601,17 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                   variant="outline"
                   onClick={handleOpenHooksDialog}
                   disabled={isRunning || !projectPath}
-                  title="Configure hooks"
+                  title={t('agent_execution.configure_hooks')}
                 >
                   <Settings2 className="h-4 w-4 mr-2" />
-                  Hooks
+                  {t('agent_execution.hooks')}
                 </Button>
               </div>
             </div>
 
             {/* Model Selection */}
             <div className="space-y-2">
-              <Label>Model</Label>
+              <Label>{t('agent_execution.model')}</Label>
               <div className="flex gap-3">
                 <button
                   type="button"
@@ -632,7 +635,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                         <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />
                       )}
                     </div>
-                    <span>Claude 4 Sonnet</span>
+                    <span>{t('agent_execution.claude_4_sonnet')}</span>
                   </div>
                 </button>
                 
@@ -658,7 +661,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                         <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />
                       )}
                     </div>
-                    <span>Claude 4 Opus</span>
+                    <span>{t('agent_execution.claude_4_opus')}</span>
                   </div>
                 </button>
               </div>
@@ -666,12 +669,12 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
 
             {/* Task Input */}
             <div className="space-y-2">
-              <Label>Task</Label>
+              <Label>{t('agent_execution.task')}</Label>
               <div className="flex gap-2">
                 <Input
                   value={task}
                   onChange={(e) => setTask(e.target.value)}
-                  placeholder="Enter the task for the agent"
+                  placeholder={t('agent_execution.task_placeholder')}
                   disabled={isRunning}
                   className="flex-1"
                   onKeyPress={(e) => {
@@ -688,12 +691,12 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                   {isRunning ? (
                     <>
                       <StopCircle className="mr-2 h-4 w-4" />
-                      Stop
+                      {t('agent_execution.stop')}
                     </>
                   ) : (
                     <>
                       <Play className="mr-2 h-4 w-4" />
-                      Execute
+                      {t('agent_execution.execute')}
                     </>
                   )}
                 </Button>
@@ -724,9 +727,9 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
               {messages.length === 0 && !isRunning && (
                 <div className="flex flex-col items-center justify-center h-full text-center">
                   <Terminal className="h-16 w-16 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium mb-2">Ready to Execute</h3>
+                  <h3 className="text-lg font-medium mb-2">{t('agent_execution.ready_to_execute')}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Select a project path and enter a task to run the agent
+                    {t('agent_execution.select_project_path_and_task')}
                   </p>
                 </div>
               )}
@@ -735,7 +738,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                 <div className="flex items-center justify-center h-full">
                   <div className="flex items-center gap-3">
                     <Loader2 className="h-6 w-6 animate-spin" />
-                    <span className="text-sm text-muted-foreground">Initializing agent...</span>
+                    <span className="text-sm text-muted-foreground">{t('agent_execution.initializing_agent')}</span>
                   </div>
                 </div>
               )}
@@ -793,7 +796,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
               {isRunning && (
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-xs text-green-600 font-medium">Running</span>
+                  <span className="text-xs text-green-600 font-medium">{t('agent_execution.running')}</span>
                 </div>
               )}
             </div>
@@ -806,7 +809,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                     className="flex items-center gap-2"
                   >
                     <Copy className="h-4 w-4" />
-                    Copy Output
+                    {t('agent_execution.copy_output')}
                     <ChevronDown className="h-3 w-3" />
                   </Button>
                 }
@@ -818,7 +821,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                       className="w-full justify-start"
                       onClick={handleCopyAsJsonl}
                     >
-                      Copy as JSONL
+                      {t('agent_execution.copy_as_jsonl')}
                     </Button>
                     <Button
                       variant="ghost"
@@ -826,7 +829,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                       className="w-full justify-start"
                       onClick={handleCopyAsMarkdown}
                     >
-                      Copy as Markdown
+                      {t('agent_execution.copy_as_markdown')}
                     </Button>
                   </div>
                 }
@@ -841,7 +844,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                 className="flex items-center gap-2"
               >
                 <X className="h-4 w-4" />
-                Close
+                {t('agent_execution.close')}
               </Button>
             </div>
           </div>
@@ -866,9 +869,9 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
               {messages.length === 0 && !isRunning && (
                 <div className="flex flex-col items-center justify-center h-full text-center">
                   <Terminal className="h-16 w-16 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium mb-2">Ready to Execute</h3>
+                  <h3 className="text-lg font-medium mb-2">{t('agent_execution.ready_to_execute')}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Select a project path and enter a task to run the agent
+                    {t('agent_execution.select_project_path_and_task')}
                   </p>
                 </div>
               )}
@@ -877,7 +880,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
                 <div className="flex items-center justify-center h-full">
                   <div className="flex items-center gap-3">
                     <Loader2 className="h-6 w-6 animate-spin" />
-                    <span className="text-sm text-muted-foreground">Initializing agent...</span>
+                    <span className="text-sm text-muted-foreground">{t('agent_execution.initializing_agent')}</span>
                   </div>
                 </div>
               )}
@@ -922,23 +925,22 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
       >
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
           <DialogHeader>
-            <DialogTitle>Configure Hooks</DialogTitle>
+            <DialogTitle>{t('agent_execution.configure_hooks')}</DialogTitle>
             <DialogDescription>
-              Configure hooks that run before, during, and after tool executions. Changes are saved immediately.
+              {t('agent_execution.configure_hooks_description')}
             </DialogDescription>
           </DialogHeader>
           
           <Tabs value={activeHooksTab} onValueChange={setActiveHooksTab} className="flex-1 flex flex-col overflow-hidden">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="project">Project Settings</TabsTrigger>
-              <TabsTrigger value="local">Local Settings</TabsTrigger>
+              <TabsTrigger value="project">{t('agent_execution.project_settings')}</TabsTrigger>
+              <TabsTrigger value="local">{t('agent_execution.local_settings')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="project" className="flex-1 overflow-auto">
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  Project hooks are stored in <code className="bg-muted px-1 py-0.5 rounded">.claude/settings.json</code> and 
-                  are committed to version control.
+                  {t('agent_execution.project_hooks_description')}
                 </p>
                 <HooksEditor
                   projectPath={projectPath}
@@ -951,8 +953,7 @@ export const AgentExecution: React.FC<AgentExecutionProps> = ({
             <TabsContent value="local" className="flex-1 overflow-auto">
               <div className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  Local hooks are stored in <code className="bg-muted px-1 py-0.5 rounded">.claude/settings.local.json</code> and 
-                  are not committed to version control.
+                  {t('agent_execution.local_hooks_description')}
                 </p>
                 <HooksEditor
                   projectPath={projectPath}

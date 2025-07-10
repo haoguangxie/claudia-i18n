@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { api, type ProcessInfo, type Session } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { formatISOTimestamp } from "@/lib/date-utils";
+import { useTranslation } from 'react-i18next';
 
 interface RunningClaudeSessionsProps {
   /**
@@ -25,6 +26,7 @@ export const RunningClaudeSessions: React.FC<RunningClaudeSessionsProps> = ({
   onSessionClick,
   className,
 }) => {
+  const { t } = useTranslation();
   const [runningSessions, setRunningSessions] = useState<ProcessInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -85,7 +87,7 @@ export const RunningClaudeSessions: React.FC<RunningClaudeSessionsProps> = ({
     return (
       <div className={cn("flex items-center gap-2 text-destructive text-sm", className)}>
         <AlertCircle className="h-4 w-4" />
-        <span>{error}</span>
+        <span>{t('running_sessions.load_error')}</span>
       </div>
     );
   }
@@ -99,10 +101,10 @@ export const RunningClaudeSessions: React.FC<RunningClaudeSessionsProps> = ({
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-          <h3 className="text-sm font-medium">Active Claude Sessions</h3>
+          <h3 className="text-sm font-medium">{t('running_sessions.active_sessions')}</h3>
         </div>
         <span className="text-xs text-muted-foreground">
-          ({runningSessions.length} running)
+          ({runningSessions.length} {t('running_sessions.running')})
         </span>
       </div>
 
@@ -135,7 +137,7 @@ export const RunningClaudeSessions: React.FC<RunningClaudeSessionsProps> = ({
                             {sessionId.substring(0, 20)}...
                           </p>
                           <span className="text-xs text-green-600 font-medium">
-                            Running
+                            {t('running_sessions.running')}
                           </span>
                         </div>
                         
@@ -144,11 +146,11 @@ export const RunningClaudeSessions: React.FC<RunningClaudeSessionsProps> = ({
                         </p>
                         
                         <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                          <span>Started: {formatISOTimestamp(session.started_at)}</span>
-                          <span>Model: {session.model}</span>
+                          <span>{t('running_sessions.started')}: {formatISOTimestamp(session.started_at)}</span>
+                          <span>{t('running_sessions.model')}: {session.model}</span>
                           {session.task && (
                             <span className="truncate max-w-[200px]" title={session.task}>
-                              Task: {session.task}
+                              {t('running_sessions.task')}: {session.task}
                             </span>
                           )}
                         </div>
@@ -161,7 +163,7 @@ export const RunningClaudeSessions: React.FC<RunningClaudeSessionsProps> = ({
                       className="flex-shrink-0"
                     >
                       <Play className="h-3 w-3 mr-1" />
-                      Resume
+                      {t('running_sessions.resume')}
                     </Button>
                   </div>
                 </CardContent>

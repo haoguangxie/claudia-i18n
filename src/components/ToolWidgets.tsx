@@ -62,6 +62,7 @@ import { open } from "@tauri-apps/plugin-shell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from 'react-i18next';
 
 /**
  * Widget for TodoWrite tool - displays a beautiful TODO list
@@ -83,7 +84,7 @@ export const TodoWidget: React.FC<{ todos: any[]; result?: any }> = ({ todos, re
     <div className="space-y-2">
       <div className="flex items-center gap-2 mb-3">
         <FileEdit className="h-4 w-4 text-primary" />
-        <span className="text-sm font-medium">Todo List</span>
+        <span className="text-sm font-medium">{t('tool_widgets.todo_list')}</span>
       </div>
       <div className="space-y-2">
         {todos.map((todo, idx) => (
@@ -368,7 +369,7 @@ export const ReadWidget: React.FC<{ filePath: string; result?: any }> = ({ fileP
       <div className="space-y-2">
         <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
           <FileText className="h-4 w-4 text-primary" />
-          <span className="text-sm">File content:</span>
+          <span className="text-sm">{t('tool_widgets.file_content')}</span>
           <code className="text-sm font-mono bg-background px-2 py-0.5 rounded flex-1 truncate">
             {filePath}
           </code>
@@ -381,14 +382,14 @@ export const ReadWidget: React.FC<{ filePath: string; result?: any }> = ({ fileP
   return (
     <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
       <FileText className="h-4 w-4 text-primary" />
-      <span className="text-sm">Reading file:</span>
+      <span className="text-sm">{t('tool_widgets.reading_file')}</span>
       <code className="text-sm font-mono bg-background px-2 py-0.5 rounded flex-1 truncate">
         {filePath}
       </code>
       {!result && (
         <div className="ml-auto flex items-center gap-1 text-xs text-muted-foreground">
           <div className="h-2 w-2 bg-blue-500 rounded-full animate-pulse" />
-          <span>Loading...</span>
+          <span>{t('tool_widgets.loading')}</span>
         </div>
       )}
     </div>
@@ -594,14 +595,14 @@ export const GlobWidget: React.FC<{ pattern: string; result?: any }> = ({ patter
     <div className="space-y-2">
       <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
         <Search className="h-4 w-4 text-primary" />
-        <span className="text-sm">Searching for pattern:</span>
+        <span className="text-sm">{t('tool_widgets.searching_for_pattern')}</span>
         <code className="text-sm font-mono bg-background px-2 py-0.5 rounded">
           {pattern}
         </code>
         {!result && (
           <div className="ml-auto flex items-center gap-1 text-xs text-muted-foreground">
             <div className="h-2 w-2 bg-blue-500 rounded-full animate-pulse" />
-            <span>Searching...</span>
+            <span>{t('tool_widgets.searching')}</span>
           </div>
         )}
       </div>
@@ -614,7 +615,7 @@ export const GlobWidget: React.FC<{ pattern: string; result?: any }> = ({ patter
             ? "border-red-500/20 bg-red-500/5 text-red-400" 
             : "border-green-500/20 bg-green-500/5 text-green-300"
         )}>
-          {resultContent || (isError ? "Search failed" : "No matches found")}
+          {resultContent || (isError ? t('tool_widgets.search_failed') : t('tool_widgets.no_matches_found'))}
         </div>
       )}
     </div>
@@ -654,7 +655,7 @@ export const BashWidget: React.FC<{
     <div className="rounded-lg border bg-zinc-950 overflow-hidden">
       <div className="px-4 py-2 bg-zinc-900/50 flex items-center gap-2 border-b">
         <Terminal className="h-3.5 w-3.5 text-green-500" />
-        <span className="text-xs font-mono text-muted-foreground">Terminal</span>
+        <span className="text-xs font-mono text-muted-foreground">{t('tool_widgets.terminal')}</span>
         {description && (
           <>
             <ChevronRight className="h-3 w-3 text-muted-foreground" />
@@ -1132,7 +1133,7 @@ export const EditWidget: React.FC<{
     <div className="space-y-2">
       <div className="flex items-center gap-2 mb-2">
         <FileEdit className="h-4 w-4 text-primary" />
-        <span className="text-sm font-medium">Applying Edit to:</span>
+        <span className="text-sm font-medium">{t('tool_widgets.applying_edit_to')}</span>
         <code className="text-sm font-mono bg-background px-2 py-0.5 rounded flex-1 truncate">
           {file_path}
         </code>
@@ -1330,7 +1331,7 @@ export const MCPWidget: React.FC<{
               <Package2 className="h-4 w-4 text-violet-500" />
               <Sparkles className="h-2.5 w-2.5 text-violet-400 absolute -top-1 -right-1" />
             </div>
-            <span className="text-sm font-medium text-violet-600 dark:text-violet-400">MCP Tool</span>
+            <span className="text-sm font-medium text-violet-600 dark:text-violet-400">{t('tool_widgets.mcp_tool')}</span>
           </div>
           {hasInput && (
             <div className="flex items-center gap-2">
@@ -1425,7 +1426,7 @@ export const MCPWidget: React.FC<{
                   className="text-xs text-violet-500 hover:text-violet-600 transition-colors inline-flex items-center gap-1"
                 >
                   <ChevronDown className="h-3 w-3" />
-                  Show full parameters
+                  {t('tool_widgets.show_full_parameters')}
                 </button>
               </div>
             )}
@@ -1435,7 +1436,7 @@ export const MCPWidget: React.FC<{
         {/* No input message */}
         {!hasInput && (
           <div className="text-xs text-muted-foreground italic px-2">
-            No parameters required
+            {t('tool_widgets.no_parameters_required')}
           </div>
         )}
       </div>
@@ -1455,7 +1456,7 @@ export const CommandWidget: React.FC<{
     <div className="rounded-lg border bg-zinc-950/50 overflow-hidden">
       <div className="px-4 py-2 border-b bg-zinc-900/50 flex items-center gap-2">
         <Terminal className="h-3.5 w-3.5 text-blue-500" />
-        <span className="text-xs font-mono text-blue-400">Command</span>
+        <span className="text-xs font-mono text-blue-400">{t('tool_widgets.command')}</span>
       </div>
       <div className="p-3 space-y-1">
         <div className="flex items-center gap-2">
@@ -1590,7 +1591,7 @@ export const MultiEditWidget: React.FC<{
     <div className="space-y-2">
       <div className="flex items-center gap-2 mb-2">
         <FileEdit className="h-4 w-4 text-muted-foreground" />
-        <span className="text-sm font-medium">Using tool: MultiEdit</span>
+        <span className="text-sm font-medium">{t('tool_widgets.using_tool_multiedit')}</span>
       </div>
       <div className="ml-6 space-y-2">
         <div className="flex items-center gap-2">
@@ -1866,14 +1867,14 @@ export const SystemInitializedWidget: React.FC<{
         <div className="flex items-start gap-3">
           <Settings className="h-5 w-5 text-blue-500 mt-0.5" />
           <div className="flex-1 space-y-4">
-            <h4 className="font-semibold text-sm">System Initialized</h4>
+            <h4 className="font-semibold text-sm">{t('tool_widgets.system_initialized')}</h4>
             
             {/* Session Info */}
             <div className="space-y-2">
               {sessionId && (
                 <div className="flex items-center gap-2 text-xs">
                   <Fingerprint className="h-3.5 w-3.5 text-muted-foreground" />
-                  <span className="text-muted-foreground">Session ID:</span>
+                  <span className="text-muted-foreground">{t('tool_widgets.session_id')}</span>
                   <code className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded">
                     {sessionId}
                   </code>
@@ -1883,7 +1884,7 @@ export const SystemInitializedWidget: React.FC<{
               {model && (
                 <div className="flex items-center gap-2 text-xs">
                   <Cpu className="h-3.5 w-3.5 text-muted-foreground" />
-                  <span className="text-muted-foreground">Model:</span>
+                  <span className="text-muted-foreground">{t('tool_widgets.model')}</span>
                   <code className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded">
                     {model}
                   </code>
@@ -1893,7 +1894,7 @@ export const SystemInitializedWidget: React.FC<{
               {cwd && (
                 <div className="flex items-center gap-2 text-xs">
                   <FolderOpen className="h-3.5 w-3.5 text-muted-foreground" />
-                  <span className="text-muted-foreground">Working Directory:</span>
+                  <span className="text-muted-foreground">{t('tool_widgets.working_directory')}</span>
                   <code className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded break-all">
                     {cwd}
                   </code>
@@ -1907,7 +1908,7 @@ export const SystemInitializedWidget: React.FC<{
                 <div className="flex items-center gap-2">
                   <Wrench className="h-3.5 w-3.5 text-muted-foreground" />
                   <span className="text-xs font-medium text-muted-foreground">
-                    Available Tools ({regularTools.length})
+                    {t('tool_widgets.available_tools', { count: regularTools.length })}
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
@@ -1976,7 +1977,7 @@ export const SystemInitializedWidget: React.FC<{
             {/* Show message if no tools */}
             {tools.length === 0 && (
               <div className="text-xs text-muted-foreground italic">
-                No tools available
+                {t('tool_widgets.no_tools_available')}
               </div>
             )}
           </div>
@@ -2003,7 +2004,7 @@ export const TaskWidget: React.FC<{
           <Bot className="h-4 w-4 text-purple-500" />
           <Sparkles className="h-2.5 w-2.5 text-purple-400 absolute -top-1 -right-1" />
         </div>
-        <span className="text-sm font-medium">Spawning Sub-Agent Task</span>
+        <span className="text-sm font-medium">{t('tool_widgets.spawning_sub_agent_task')}</span>
       </div>
       
       <div className="ml-6 space-y-3">
@@ -2011,7 +2012,7 @@ export const TaskWidget: React.FC<{
           <div className="rounded-lg border border-purple-500/20 bg-purple-500/5 p-3">
             <div className="flex items-center gap-2 mb-1">
               <Zap className="h-3.5 w-3.5 text-purple-500" />
-              <span className="text-xs font-medium text-purple-600 dark:text-purple-400">Task Description</span>
+              <span className="text-xs font-medium text-purple-600 dark:text-purple-400">{t('tool_widgets.task_description')}</span>
             </div>
             <p className="text-sm text-foreground ml-5">{description}</p>
           </div>
@@ -2024,7 +2025,7 @@ export const TaskWidget: React.FC<{
               className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               <ChevronRight className={cn("h-3 w-3 transition-transform", isExpanded && "rotate-90")} />
-              <span>Task Instructions</span>
+              <span>{t('tool_widgets.task_instructions')}</span>
             </button>
             
             {isExpanded && (
@@ -2855,6 +2856,8 @@ export const TodoReadWidget: React.FC<{ todos?: any[]; result?: any }> = ({ todo
     );
   };
 
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -2862,9 +2865,9 @@ export const TodoReadWidget: React.FC<{ todos?: any[]; result?: any }> = ({ todo
         <div className="flex items-center gap-3">
           <ListChecks className="h-5 w-5 text-primary" />
           <div>
-            <h3 className="text-sm font-medium">Todo Overview</h3>
+            <h3 className="text-sm font-medium">{t('tool_widgets.todo_overview')}</h3>
             <p className="text-xs text-muted-foreground">
-              {stats.total} total • {stats.completed} completed • {stats.completionRate}% done
+              {t('tool_widgets.todo_overview_stats', { total: stats.total, completed: stats.completed, rate: stats.completionRate })}
             </p>
           </div>
         </div>
@@ -2878,7 +2881,7 @@ export const TodoReadWidget: React.FC<{ todos?: any[]; result?: any }> = ({ todo
             onClick={exportAsJson}
           >
             <Download className="h-3 w-3 mr-1" />
-            JSON
+            {t('tool_widgets.json')}
           </Button>
           <Button
             size="sm"
@@ -2887,7 +2890,7 @@ export const TodoReadWidget: React.FC<{ todos?: any[]; result?: any }> = ({ todo
             onClick={exportAsMarkdown}
           >
             <Download className="h-3 w-3 mr-1" />
-            Markdown
+            {t('tool_widgets.markdown')}
           </Button>
         </div>
       </div>
@@ -2898,7 +2901,7 @@ export const TodoReadWidget: React.FC<{ todos?: any[]; result?: any }> = ({ todo
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Search todos..."
+            placeholder={t('tool_widgets.search_todos')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 h-9"
@@ -2915,7 +2918,7 @@ export const TodoReadWidget: React.FC<{ todos?: any[]; result?: any }> = ({ todo
                 className="h-7 px-2 text-xs"
                 onClick={() => setStatusFilter(status)}
               >
-                {status === "all" ? "All" : statusConfig[status as keyof typeof statusConfig]?.label}
+                {status === "all" ? t('tool_widgets.all') : statusConfig[status as keyof typeof statusConfig]?.label}
                 {status === "all" && (
                   <Badge variant="secondary" className="ml-1 h-4 px-1 text-xs">
                     {stats.total}

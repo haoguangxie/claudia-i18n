@@ -28,6 +28,7 @@ import { ErrorBoundary } from './ErrorBoundary';
 import { formatISOTimestamp } from '@/lib/date-utils';
 import { AGENT_ICONS } from './CCAgents';
 import type { ClaudeStreamMessage } from './AgentExecution';
+import { useTranslation } from 'react-i18next';
 
 interface AgentRunOutputViewerProps {
   /**
@@ -82,6 +83,7 @@ export function AgentRunOutputViewer({
   const fullscreenMessagesEndRef = useRef<HTMLDivElement>(null);
   const unlistenRefs = useRef<UnlistenFn[]>([]);
   const { getCachedOutput, setCachedOutput } = useOutputCache();
+  const { t } = useTranslation();
 
   // Auto-scroll logic
   const isAtBottom = () => {
@@ -582,7 +584,7 @@ export function AgentRunOutputViewer({
                       className="h-8 px-2"
                     >
                       <Copy className="h-4 w-4 mr-1" />
-                      Copy
+                      {t('agent_run_output_viewer.copy')}
                       <ChevronDown className="h-3 w-3 ml-1" />
                     </Button>
                   }
@@ -594,7 +596,7 @@ export function AgentRunOutputViewer({
                         className="w-full justify-start"
                         onClick={handleCopyAsJsonl}
                       >
-                        Copy as JSONL
+                        {t('agent_run_output_viewer.copy_as_jsonl')}
                       </Button>
                       <Button
                         variant="ghost"
@@ -602,7 +604,7 @@ export function AgentRunOutputViewer({
                         className="w-full justify-start"
                         onClick={handleCopyAsMarkdown}
                       >
-                        Copy as Markdown
+                        {t('agent_run_output_viewer.copy_as_markdown')}
                       </Button>
                     </div>
                   }
@@ -625,7 +627,7 @@ export function AgentRunOutputViewer({
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsFullscreen(!isFullscreen)}
-                  title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+                  title={isFullscreen ? t('agent_run_output_viewer.exit_fullscreen') : t('agent_run_output_viewer.enter_fullscreen')}
                   className="h-8 px-2"
                 >
                   {isFullscreen ? (
@@ -639,7 +641,7 @@ export function AgentRunOutputViewer({
                   size="sm"
                   onClick={handleRefresh}
                   disabled={refreshing}
-                  title="Refresh output"
+                  title={t('agent_run_output_viewer.refresh_output')}
                   className="h-8 px-2"
                 >
                   <RotateCcw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
@@ -650,7 +652,7 @@ export function AgentRunOutputViewer({
                     size="sm"
                     onClick={handleStop}
                     disabled={refreshing}
-                    title="Stop execution"
+                    title={t('agent_run_output_viewer.stop_execution')}
                     className="h-8 px-2 text-destructive hover:text-destructive"
                   >
                     <StopCircle className="h-4 w-4" />
@@ -672,12 +674,12 @@ export function AgentRunOutputViewer({
               <div className="flex items-center justify-center h-full">
                 <div className="flex items-center space-x-2">
                   <RefreshCw className="h-4 w-4 animate-spin" />
-                  <span>Loading output...</span>
+                  <span>{t('agent_run_output_viewer.loading_output')}</span>
                 </div>
               </div>
             ) : messages.length === 0 ? (
               <div className="flex items-center justify-center h-full text-muted-foreground">
-                <p>No output available yet</p>
+                <p>{t('agent_run_output_viewer.no_output')}</p>
               </div>
             ) : (
               <div 
@@ -725,7 +727,7 @@ export function AgentRunOutputViewer({
                     size="sm"
                   >
                     <Copy className="h-4 w-4 mr-2" />
-                    Copy Output
+                    {t('agent_run_output_viewer.copy_output')}
                     <ChevronDown className="h-3 w-3 ml-2" />
                   </Button>
                 }
@@ -737,7 +739,7 @@ export function AgentRunOutputViewer({
                       className="w-full justify-start"
                       onClick={handleCopyAsJsonl}
                     >
-                      Copy as JSONL
+                      {t('agent_run_output_viewer.copy_as_jsonl')}
                     </Button>
                     <Button
                       variant="ghost"
@@ -745,7 +747,7 @@ export function AgentRunOutputViewer({
                       className="w-full justify-start"
                       onClick={handleCopyAsMarkdown}
                     >
-                      Copy as Markdown
+                      {t('agent_run_output_viewer.copy_as_markdown')}
                     </Button>
                   </div>
                 }
@@ -767,7 +769,7 @@ export function AgentRunOutputViewer({
                   disabled={refreshing}
                 >
                   <StopCircle className="h-4 w-4 mr-2" />
-                  Stop
+                  {t('agent_run_output_viewer.stop')}
                 </Button>
               )}
               <Button
@@ -776,7 +778,7 @@ export function AgentRunOutputViewer({
                 onClick={() => setIsFullscreen(false)}
               >
                 <Minimize2 className="h-4 w-4 mr-2" />
-                Exit Fullscreen
+                {t('agent_run_output_viewer.exit_fullscreen')}
               </Button>
             </div>
           </div>
@@ -787,8 +789,8 @@ export function AgentRunOutputViewer({
           >
             <div className="max-w-4xl mx-auto space-y-2">
               {messages.length === 0 ? (
-                <div className="text-center text-muted-foreground py-8">
-                  No output available yet
+                <div className="text-center text-muted-foreground text-xs py-8">
+                  {t('agent_run_output_viewer.no_output')}
                 </div>
               ) : (
                 <>

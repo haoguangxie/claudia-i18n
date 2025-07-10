@@ -25,6 +25,15 @@ https://github.com/user-attachments/assets/bf0bdf9d-ba91-45af-9ac4-7274f57075cf
 > [!TIP]
 > **⭐ Star the repo and follow [@getAsterisk](https://x.com/getAsterisk) on X for early access to `asteria-swe-v0`**.
 
+# Claudia i18n (Chinese Internationalization Fork)
+
+> This repository is a fork of [getAsterisk/claudia](https://github.com/getAsterisk/claudia), focusing on **Chinese localization (i18n)** and multi-language support, while keeping up-to-date with upstream features and fixes.
+>
+> - Original repo: [getAsterisk/claudia](https://github.com/getAsterisk/claudia)
+> - This fork: [haoguangxie/claudia-i18n](https://github.com/haoguangxie/claudia-i18n)
+
+For the original English version and latest upstream updates, please visit the original repository.
+
 ## 🌟 Overview
 
 **Claudia** is a powerful desktop application that transforms how you interact with Claude Code. Built with Tauri 2, it provides a beautiful GUI for managing your Claude Code sessions, creating custom agents, tracking usage, and much more.

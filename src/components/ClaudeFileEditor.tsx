@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Toast, ToastContainer } from "@/components/ui/toast";
 import { api, type ClaudeMdFile } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { useTranslation } from 'react-i18next';
 
 interface ClaudeFileEditorProps {
   /**
@@ -44,6 +45,7 @@ export const ClaudeFileEditor: React.FC<ClaudeFileEditorProps> = ({
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   
   const hasChanges = content !== originalContent;
+  const { t } = useTranslation();
   
   // Load the file content on mount
   useEffect(() => {
@@ -59,7 +61,7 @@ export const ClaudeFileEditor: React.FC<ClaudeFileEditorProps> = ({
       setOriginalContent(fileContent);
     } catch (err) {
       console.error("Failed to load file:", err);
-      setError("Failed to load CLAUDE.md file");
+      setError(t('claude_file_editor.failed_to_load'));
     } finally {
       setLoading(false);
     }
@@ -72,11 +74,11 @@ export const ClaudeFileEditor: React.FC<ClaudeFileEditorProps> = ({
       setToast(null);
       await api.saveClaudeMdFile(file.absolute_path, content);
       setOriginalContent(content);
-      setToast({ message: "File saved successfully", type: "success" });
+      setToast({ message: t('claude_file_editor.saved_success'), type: "success" });
     } catch (err) {
       console.error("Failed to save file:", err);
-      setError("Failed to save CLAUDE.md file");
-      setToast({ message: "Failed to save file", type: "error" });
+      setError(t('claude_file_editor.failed_to_save'));
+      setToast({ message: t('claude_file_editor.failed_to_save_toast'), type: "error" });
     } finally {
       setSaving(false);
     }
@@ -85,7 +87,7 @@ export const ClaudeFileEditor: React.FC<ClaudeFileEditorProps> = ({
   const handleBack = () => {
     if (hasChanges) {
       const confirmLeave = window.confirm(
-        "You have unsaved changes. Are you sure you want to leave?"
+        t('claude_file_editor.unsaved_confirm')
       );
       if (!confirmLeave) return;
     }
@@ -114,7 +116,7 @@ export const ClaudeFileEditor: React.FC<ClaudeFileEditorProps> = ({
             <div className="min-w-0 flex-1">
               <h2 className="text-lg font-semibold truncate">{file.relative_path}</h2>
               <p className="text-xs text-muted-foreground">
-                Edit project-specific Claude Code system prompt
+                {t('claude_file_editor.subtitle')}
               </p>
             </div>
           </div>
@@ -129,7 +131,7 @@ export const ClaudeFileEditor: React.FC<ClaudeFileEditorProps> = ({
             ) : (
               <Save className="mr-2 h-4 w-4" />
             )}
-            {saving ? "Saving..." : "Save"}
+            {saving ? t('claude_file_editor.saving') : t('claude_file_editor.save')}
           </Button>
         </motion.div>
         

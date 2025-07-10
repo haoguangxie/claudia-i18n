@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Toast, ToastContainer } from "@/components/ui/toast";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { useTranslation } from 'react-i18next';
 
 interface MarkdownEditorProps {
   /**
@@ -36,6 +37,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   
   const hasChanges = content !== originalContent;
+  const { t } = useTranslation();
   
   // Load the system prompt on mount
   useEffect(() => {
@@ -51,7 +53,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       setOriginalContent(prompt);
     } catch (err) {
       console.error("Failed to load system prompt:", err);
-      setError("Failed to load CLAUDE.md file");
+      setError(t('markdown_editor.failed_to_load'));
     } finally {
       setLoading(false);
     }
@@ -64,11 +66,11 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       setToast(null);
       await api.saveSystemPrompt(content);
       setOriginalContent(content);
-      setToast({ message: "CLAUDE.md saved successfully", type: "success" });
+      setToast({ message: t('markdown_editor.saved_success'), type: "success" });
     } catch (err) {
       console.error("Failed to save system prompt:", err);
-      setError("Failed to save CLAUDE.md file");
-      setToast({ message: "Failed to save CLAUDE.md", type: "error" });
+      setError(t('markdown_editor.failed_to_save'));
+      setToast({ message: t('markdown_editor.failed_to_save_toast'), type: "error" });
     } finally {
       setSaving(false);
     }
@@ -77,7 +79,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const handleBack = () => {
     if (hasChanges) {
       const confirmLeave = window.confirm(
-        "You have unsaved changes. Are you sure you want to leave?"
+        t('markdown_editor.unsaved_confirm')
       );
       if (!confirmLeave) return;
     }
@@ -104,9 +106,9 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
-              <h2 className="text-lg font-semibold">CLAUDE.md</h2>
+              <h2 className="text-lg font-semibold">{t('markdown_editor.title')}</h2>
               <p className="text-xs text-muted-foreground">
-                Edit your Claude Code system prompt
+                {t('markdown_editor.subtitle')}
               </p>
             </div>
           </div>
@@ -117,11 +119,16 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             size="sm"
           >
             {saving ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {t('markdown_editor.saving')}
+              </>
             ) : (
-              <Save className="mr-2 h-4 w-4" />
+              <>
+                <Save className="mr-2 h-4 w-4" />
+                {t('markdown_editor.save')}
+              </>
             )}
-            {saving ? "Saving..." : "Save"}
           </Button>
         </motion.div>
         

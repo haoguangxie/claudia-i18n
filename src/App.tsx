@@ -20,6 +20,7 @@ import { NFOCredits } from "@/components/NFOCredits";
 import { ClaudeBinaryDialog } from "@/components/ClaudeBinaryDialog";
 import { Toast, ToastContainer } from "@/components/ui/toast";
 import { ProjectSettings } from '@/components/ProjectSettings';
+import { useTranslation } from 'react-i18next';
 
 type View = 
   | "welcome" 
@@ -56,6 +57,7 @@ function App() {
   const [isClaudeStreaming, setIsClaudeStreaming] = useState(false);
   const [projectForSettings, setProjectForSettings] = useState<Project | null>(null);
   const [previousView, setPreviousView] = useState<View>("welcome");
+  const { t } = useTranslation();
 
   // Load projects on mount when in projects view
   useEffect(() => {
@@ -214,7 +216,7 @@ function App() {
               >
                 <h1 className="text-4xl font-bold tracking-tight">
                   <span className="rotating-symbol"></span>
-                  Welcome to Claudia
+                  {t('welcome.title')}
                 </h1>
               </motion.div>
 
@@ -232,7 +234,7 @@ function App() {
                   >
                     <div className="h-full flex flex-col items-center justify-center p-8">
                       <Bot className="h-16 w-16 mb-4 text-primary" />
-                      <h2 className="text-xl font-semibold">CC Agents</h2>
+                      <h2 className="text-xl font-semibold">{t('welcome.agents')}</h2>
                     </div>
                   </Card>
                 </motion.div>
@@ -249,7 +251,7 @@ function App() {
                   >
                     <div className="h-full flex flex-col items-center justify-center p-8">
                       <FolderCode className="h-16 w-16 mb-4 text-primary" />
-                      <h2 className="text-xl font-semibold">CC Projects</h2>
+                      <h2 className="text-xl font-semibold">{t('welcome.projects')}</h2>
                     </div>
                   </Card>
                 </motion.div>

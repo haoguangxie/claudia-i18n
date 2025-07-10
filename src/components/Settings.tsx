@@ -25,6 +25,8 @@ import { ClaudeVersionSelector } from "./ClaudeVersionSelector";
 import { StorageTab } from "./StorageTab";
 import { HooksEditor } from "./HooksEditor";
 import { SlashCommandsManager } from "./SlashCommandsManager";
+import { useTranslation } from "react-i18next";
+import i18n from "../i18n";
 
 interface SettingsProps {
   /**
@@ -288,6 +290,17 @@ export const Settings: React.FC<SettingsProps> = ({
     setBinaryPathChanged(installation.path !== currentBinaryPath);
   };
 
+  const { t } = useTranslation();
+  const [language, setLanguage] = useState<string>(() => localStorage.getItem('lang') || i18n.language || 'zh');
+
+  // 语言切换
+  const handleLanguageChange = (lang: string) => {
+    i18n.changeLanguage(lang).then(() => {
+      setLanguage(lang);
+      localStorage.setItem('lang', lang);
+    });
+  };
+
   return (
     <div className={cn("flex flex-col h-full bg-background text-foreground", className)}>
       <div className="max-w-4xl mx-auto w-full flex flex-col h-full">
@@ -308,9 +321,9 @@ export const Settings: React.FC<SettingsProps> = ({
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <h2 className="text-lg font-semibold">Settings</h2>
+          <h2 className="text-lg font-semibold">{t('settings.title')}</h2>
           <p className="text-xs text-muted-foreground">
-              Configure Claude Code preferences
+            {t('settings.subtitle')}
           </p>
           </div>
         </div>
@@ -324,12 +337,12 @@ export const Settings: React.FC<SettingsProps> = ({
           {saving ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              Saving...
+              {t('settings.saving')}
             </>
           ) : (
             <>
               <Save className="h-4 w-4" />
-              Save Settings
+              {t('settings.save')}
             </>
           )}
         </Button>
@@ -359,28 +372,42 @@ export const Settings: React.FC<SettingsProps> = ({
         <div className="flex-1 overflow-y-auto p-4">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid grid-cols-7 w-full">
-              <TabsTrigger value="general">General</TabsTrigger>
-              <TabsTrigger value="permissions">Permissions</TabsTrigger>
-              <TabsTrigger value="environment">Environment</TabsTrigger>
-              <TabsTrigger value="advanced">Advanced</TabsTrigger>
-              <TabsTrigger value="hooks">Hooks</TabsTrigger>
-              <TabsTrigger value="commands">Commands</TabsTrigger>
-              <TabsTrigger value="storage">Storage</TabsTrigger>
+              <TabsTrigger value="general">{t('settings.tab_general')}</TabsTrigger>
+              <TabsTrigger value="permissions">{t('settings.tab_permissions')}</TabsTrigger>
+              <TabsTrigger value="environment">{t('settings.tab_environment')}</TabsTrigger>
+              <TabsTrigger value="advanced">{t('settings.tab_advanced')}</TabsTrigger>
+              <TabsTrigger value="hooks">{t('settings.tab_hooks')}</TabsTrigger>
+              <TabsTrigger value="commands">{t('settings.tab_commands')}</TabsTrigger>
+              <TabsTrigger value="storage">{t('settings.tab_storage')}</TabsTrigger>
             </TabsList>
             
             {/* General Settings */}
             <TabsContent value="general" className="space-y-6">
               <Card className="p-6 space-y-6">
                 <div>
-                  <h3 className="text-base font-semibold mb-4">General Settings</h3>
+                  <h3 className="text-base font-semibold mb-4">{t('settings.general_title')}</h3>
                   
                   <div className="space-y-4">
+                    {/* 语言选择，右对齐 */}
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="language-select">{t('settings.language')}</Label>
+                      <select
+                        id="language-select"
+                        value={language}
+                        onChange={e => handleLanguageChange(e.target.value)}
+                        className="border rounded px-2 py-1 text-sm min-w-[120px]"
+                        style={{ textAlign: 'right' }}
+                      >
+                        <option value="zh">简体中文</option>
+                        <option value="en">English</option>
+                      </select>
+                    </div>
                     {/* Include Co-authored By */}
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5 flex-1">
-                        <Label htmlFor="coauthored">Include "Co-authored by Claude"</Label>
+                        <Label htmlFor="coauthored">{t('settings.coauthored_label')}</Label>
                         <p className="text-xs text-muted-foreground">
-                          Add Claude attribution to git commits and pull requests
+                          {t('settings.coauthored_desc')}
                         </p>
                       </div>
                       <Switch
@@ -393,9 +420,9 @@ export const Settings: React.FC<SettingsProps> = ({
                     {/* Verbose Output */}
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5 flex-1">
-                        <Label htmlFor="verbose">Verbose Output</Label>
+                        <Label htmlFor="verbose">{t('settings.verbose_label')}</Label>
                         <p className="text-xs text-muted-foreground">
-                          Show full bash and command outputs
+                          {t('settings.verbose_desc')}
                         </p>
                       </div>
                       <Switch
@@ -407,12 +434,12 @@ export const Settings: React.FC<SettingsProps> = ({
                     
                     {/* Cleanup Period */}
                     <div className="space-y-2">
-                      <Label htmlFor="cleanup">Chat Transcript Retention (days)</Label>
+                      <Label htmlFor="cleanup">{t('settings.cleanup_label')}</Label>
                       <Input
                         id="cleanup"
                         type="number"
                         min="1"
-                        placeholder="30"
+                        placeholder={t('settings.cleanup_placeholder')}
                         value={settings?.cleanupPeriodDays || ""}
                         onChange={(e) => {
                           const value = e.target.value ? parseInt(e.target.value) : undefined;
@@ -420,16 +447,16 @@ export const Settings: React.FC<SettingsProps> = ({
                         }}
                       />
                       <p className="text-xs text-muted-foreground">
-                        How long to retain chat transcripts locally (default: 30 days)
+                        {t('settings.cleanup_desc')}
                       </p>
                     </div>
                     
                     {/* Claude Binary Path Selector */}
                     <div className="space-y-4">
                       <div>
-                        <Label className="text-sm font-medium mb-2 block">Claude Code Installation</Label>
+                        <Label className="text-sm font-medium mb-2 block">{t('settings.installation_label')}</Label>
                         <p className="text-xs text-muted-foreground mb-4">
-                          Select which Claude Code installation to use. Bundled version is recommended for best compatibility.
+                          {t('settings.installation_desc')}
                         </p>
                       </div>
                       <ClaudeVersionSelector
@@ -438,7 +465,7 @@ export const Settings: React.FC<SettingsProps> = ({
                       />
                       {binaryPathChanged && (
                         <p className="text-xs text-amber-600 dark:text-amber-400">
-                          ⚠️ Claude binary path has been changed. Remember to save your settings.
+                          {t('settings.installation_changed_warning')}
                         </p>
                       )}
                     </div>
@@ -452,16 +479,16 @@ export const Settings: React.FC<SettingsProps> = ({
               <Card className="p-6">
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-base font-semibold mb-2">Permission Rules</h3>
+                    <h3 className="text-base font-semibold mb-2">{t('settings.permissions_title')}</h3>
                     <p className="text-sm text-muted-foreground mb-4">
-                      Control which tools Claude Code can use without manual approval
+                      {t('settings.permissions_desc')}
                     </p>
                   </div>
                   
                   {/* Allow Rules */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-green-500">Allow Rules</Label>
+                      <Label className="text-sm font-medium text-green-500">{t('settings.allow_rules')}</Label>
                       <Button
                         variant="outline"
                         size="sm"
@@ -469,13 +496,13 @@ export const Settings: React.FC<SettingsProps> = ({
                         className="gap-2 hover:border-green-500/50 hover:text-green-500"
                       >
                         <Plus className="h-3 w-3" />
-                        Add Rule
+                        {t('settings.add_rule')}
                       </Button>
                     </div>
                     <div className="space-y-2">
                       {allowRules.length === 0 ? (
                         <p className="text-xs text-muted-foreground py-2">
-                          No allow rules configured. Claude will ask for approval for all tools.
+                          {t('settings.no_allow_rules')}
                         </p>
                       ) : (
                         allowRules.map((rule) => (
@@ -486,7 +513,7 @@ export const Settings: React.FC<SettingsProps> = ({
                             className="flex items-center gap-2"
                           >
                             <Input
-                              placeholder="e.g., Bash(npm run test:*)"
+                              placeholder={t('settings.allow_rule_placeholder')}
                               value={rule.value}
                               onChange={(e) => updatePermissionRule("allow", rule.id, e.target.value)}
                               className="flex-1"
@@ -508,7 +535,7 @@ export const Settings: React.FC<SettingsProps> = ({
                   {/* Deny Rules */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-medium text-red-500">Deny Rules</Label>
+                      <Label className="text-sm font-medium text-red-500">{t('settings.deny_rules')}</Label>
                       <Button
                         variant="outline"
                         size="sm"
@@ -516,13 +543,13 @@ export const Settings: React.FC<SettingsProps> = ({
                         className="gap-2 hover:border-red-500/50 hover:text-red-500"
                       >
                         <Plus className="h-3 w-3" />
-                        Add Rule
+                        {t('settings.add_rule')}
                       </Button>
                     </div>
                     <div className="space-y-2">
                       {denyRules.length === 0 ? (
                         <p className="text-xs text-muted-foreground py-2">
-                          No deny rules configured.
+                          {t('settings.no_deny_rules')}
                         </p>
                       ) : (
                         denyRules.map((rule) => (
@@ -533,7 +560,7 @@ export const Settings: React.FC<SettingsProps> = ({
                             className="flex items-center gap-2"
                           >
                             <Input
-                              placeholder="e.g., Bash(curl:*)"
+                              placeholder={t('settings.deny_rule_placeholder')}
                               value={rule.value}
                               onChange={(e) => updatePermissionRule("deny", rule.id, e.target.value)}
                               className="flex-1"
@@ -554,7 +581,7 @@ export const Settings: React.FC<SettingsProps> = ({
                   
                   <div className="pt-2 space-y-2">
                     <p className="text-xs text-muted-foreground">
-                      <strong>Examples:</strong>
+                      <strong>{t('settings.examples')}</strong>
                     </p>
                     <ul className="text-xs text-muted-foreground space-y-1 ml-4">
                       <li>• <code className="px-1 py-0.5 rounded bg-green-500/10 text-green-600 dark:text-green-400">Bash</code> - Allow all bash commands</li>
@@ -574,9 +601,9 @@ export const Settings: React.FC<SettingsProps> = ({
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-base font-semibold">Environment Variables</h3>
+                      <h3 className="text-base font-semibold">{t('settings.env_title')}</h3>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Environment variables applied to every Claude Code session
+                        {t('settings.env_desc')}
                       </p>
                     </div>
                     <Button
@@ -586,14 +613,14 @@ export const Settings: React.FC<SettingsProps> = ({
                       className="gap-2"
                     >
                       <Plus className="h-3 w-3" />
-                      Add Variable
+                      {t('settings.add_variable')}
                     </Button>
                   </div>
                   
                   <div className="space-y-3">
                     {envVars.length === 0 ? (
                       <p className="text-xs text-muted-foreground py-2">
-                        No environment variables configured.
+                        {t('settings.no_env_vars')}
                       </p>
                     ) : (
                       envVars.map((envVar) => (
@@ -604,14 +631,14 @@ export const Settings: React.FC<SettingsProps> = ({
                           className="flex items-center gap-2"
                         >
                           <Input
-                            placeholder="KEY"
+                            placeholder={t('settings.env_key_placeholder')}
                             value={envVar.key}
                             onChange={(e) => updateEnvVar(envVar.id, "key", e.target.value)}
                             className="flex-1 font-mono text-sm"
                           />
                           <span className="text-muted-foreground">=</span>
                           <Input
-                            placeholder="value"
+                            placeholder={t('settings.env_value_placeholder')}
                             value={envVar.value}
                             onChange={(e) => updateEnvVar(envVar.id, "value", e.target.value)}
                             className="flex-1 font-mono text-sm"
@@ -631,7 +658,7 @@ export const Settings: React.FC<SettingsProps> = ({
                   
                   <div className="pt-2 space-y-2">
                     <p className="text-xs text-muted-foreground">
-                      <strong>Common variables:</strong>
+                      <strong>{t('settings.common_vars')}</strong>
                     </p>
                     <ul className="text-xs text-muted-foreground space-y-1 ml-4">
                       <li>• <code className="px-1 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400">CLAUDE_CODE_ENABLE_TELEMETRY</code> - Enable/disable telemetry (0 or 1)</li>
@@ -647,34 +674,34 @@ export const Settings: React.FC<SettingsProps> = ({
               <Card className="p-6">
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-base font-semibold mb-4">Advanced Settings</h3>
+                    <h3 className="text-base font-semibold mb-4">{t('settings.advanced_title')}</h3>
                     <p className="text-sm text-muted-foreground mb-6">
-                      Additional configuration options for advanced users
+                      {t('settings.advanced_desc')}
                     </p>
                   </div>
                   
                   {/* API Key Helper */}
                   <div className="space-y-2">
-                    <Label htmlFor="apiKeyHelper">API Key Helper Script</Label>
+                    <Label htmlFor="apiKeyHelper">{t('settings.api_key_helper_label')}</Label>
                     <Input
                       id="apiKeyHelper"
-                      placeholder="/path/to/generate_api_key.sh"
+                      placeholder={t('settings.api_key_helper_placeholder')}
                       value={settings?.apiKeyHelper || ""}
                       onChange={(e) => updateSetting("apiKeyHelper", e.target.value || undefined)}
                     />
                     <p className="text-xs text-muted-foreground">
-                      Custom script to generate auth values for API requests
+                      {t('settings.api_key_helper_desc')}
                     </p>
                   </div>
                   
                   {/* Raw JSON Editor */}
                   <div className="space-y-2">
-                    <Label>Raw Settings (JSON)</Label>
+                    <Label>{t('settings.raw_json_label')}</Label>
                     <div className="p-3 rounded-md bg-muted font-mono text-xs overflow-x-auto whitespace-pre-wrap">
                       <pre>{JSON.stringify(settings, null, 2)}</pre>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      This shows the raw JSON that will be saved to ~/.claude/settings.json
+                      {t('settings.raw_json_desc')}
                     </p>
                   </div>
                 </div>
@@ -686,10 +713,9 @@ export const Settings: React.FC<SettingsProps> = ({
               <Card className="p-6">
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-base font-semibold mb-2">User Hooks</h3>
+                    <h3 className="text-base font-semibold mb-2">{t('settings.hooks_title')}</h3>
                     <p className="text-sm text-muted-foreground mb-4">
-                      Configure hooks that apply to all Claude Code sessions for your user account.
-                      These are stored in <code className="mx-1 px-2 py-1 bg-muted rounded text-xs">~/.claude/settings.json</code>
+                      {t('settings.hooks_desc')}
                     </p>
                   </div>
                   

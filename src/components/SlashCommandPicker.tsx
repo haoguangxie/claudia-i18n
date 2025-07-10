@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import type { SlashCommand } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { useTranslation } from 'react-i18next';
 
 interface SlashCommandPickerProps {
   /**
@@ -78,6 +79,7 @@ export const SlashCommandPicker: React.FC<SlashCommandPickerProps> = ({
   initialQuery = "",
   className,
 }) => {
+  const { t } = useTranslation();
   const [commands, setCommands] = useState<SlashCommand[]>([]);
   const [filteredCommands, setFilteredCommands] = useState<SlashCommand[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -225,11 +227,11 @@ export const SlashCommandPicker: React.FC<SlashCommandPickerProps> = ({
   const groupedCommands = filteredCommands.reduce((acc, cmd) => {
     let key: string;
     if (cmd.scope === "user") {
-      key = cmd.namespace ? `User Commands: ${cmd.namespace}` : "User Commands";
+      key = cmd.namespace ? t('slash_command_picker.user_commands_with_ns', { ns: cmd.namespace }) : t('slash_command_picker.user_commands');
     } else if (cmd.scope === "project") {
-      key = cmd.namespace ? `Project Commands: ${cmd.namespace}` : "Project Commands";
+      key = cmd.namespace ? t('slash_command_picker.project_commands_with_ns', { ns: cmd.namespace }) : t('slash_command_picker.project_commands');
     } else {
-      key = cmd.namespace || "Commands";
+      key = cmd.namespace || t('slash_command_picker.commands');
     }
     
     if (!acc[key]) {
@@ -262,10 +264,10 @@ export const SlashCommandPicker: React.FC<SlashCommandPickerProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Command className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">Slash Commands</span>
+            <span className="text-sm font-medium">{t('slash_command_picker.header')}</span>
             {searchQuery && (
               <span className="text-xs text-muted-foreground">
-                Searching: "{searchQuery}"
+                {t('slash_command_picker.searching', { query: searchQuery })}
               </span>
             )}
           </div>
@@ -283,8 +285,8 @@ export const SlashCommandPicker: React.FC<SlashCommandPickerProps> = ({
         <div className="mt-3">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="default">Default</TabsTrigger>
-              <TabsTrigger value="custom">Custom</TabsTrigger>
+              <TabsTrigger value="default">{t('slash_command_picker.tab_default')}</TabsTrigger>
+              <TabsTrigger value="custom">{t('slash_command_picker.tab_custom')}</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -294,7 +296,7 @@ export const SlashCommandPicker: React.FC<SlashCommandPickerProps> = ({
       <div className="flex-1 overflow-y-auto relative">
         {isLoading && (
           <div className="flex items-center justify-center h-full">
-            <span className="text-sm text-muted-foreground">Loading commands...</span>
+            <span className="text-sm text-muted-foreground">{t('slash_command_picker.loading')}</span>
           </div>
         )}
 
@@ -314,11 +316,11 @@ export const SlashCommandPicker: React.FC<SlashCommandPickerProps> = ({
                   <div className="flex flex-col items-center justify-center h-full">
                     <Command className="h-8 w-8 text-muted-foreground mb-2" />
                     <span className="text-sm text-muted-foreground">
-                      {searchQuery ? 'No commands found' : 'No default commands available'}
+                      {searchQuery ? t('slash_command_picker.no_commands_found') : t('slash_command_picker.no_default_commands')}
                     </span>
                     {!searchQuery && (
                       <p className="text-xs text-muted-foreground mt-2 text-center px-4">
-                        Default commands are built-in system commands
+                        {t('slash_command_picker.default_commands_tip')}
                       </p>
                     )}
                   </div>
@@ -376,11 +378,11 @@ export const SlashCommandPicker: React.FC<SlashCommandPickerProps> = ({
                   <div className="flex flex-col items-center justify-center h-full">
                     <Search className="h-8 w-8 text-muted-foreground mb-2" />
                     <span className="text-sm text-muted-foreground">
-                      {searchQuery ? 'No commands found' : 'No custom commands available'}
+                      {searchQuery ? t('slash_command_picker.no_commands_found') : t('slash_command_picker.no_custom_commands')}
                     </span>
                     {!searchQuery && (
                       <p className="text-xs text-muted-foreground mt-2 text-center px-4">
-                        Create commands in <code className="px-1">.claude/commands/</code> or <code className="px-1">~/.claude/commands/</code>
+                        {t('slash_command_picker.create_commands_tip')}
                       </p>
                     )}
                   </div>
@@ -541,7 +543,7 @@ export const SlashCommandPicker: React.FC<SlashCommandPickerProps> = ({
       {/* Footer */}
       <div className="border-t border-border p-2">
         <p className="text-xs text-muted-foreground text-center">
-          ↑↓ Navigate • Enter Select • Esc Close
+          {t('slash_command_picker.footer_nav_hint')}
         </p>
       </div>
     </motion.div>

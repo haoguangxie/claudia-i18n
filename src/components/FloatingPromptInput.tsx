@@ -20,6 +20,7 @@ import { SlashCommandPicker } from "./SlashCommandPicker";
 import { ImagePreview } from "./ImagePreview";
 import { type FileEntry, type SlashCommand } from "@/lib/api";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+import { useTranslation } from 'react-i18next';
 
 interface FloatingPromptInputProps {
   /**
@@ -190,6 +191,8 @@ const FloatingPromptInputInner = (
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const expandedTextareaRef = useRef<HTMLTextAreaElement>(null);
   const unlistenDragDropRef = useRef<(() => void) | null>(null);
+
+  const { t } = useTranslation();
 
   // Expose a method to add images programmatically
   React.useImperativeHandle(
@@ -733,7 +736,7 @@ const FloatingPromptInputInner = (
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-medium">Compose your prompt</h3>
+                <h3 className="text-sm font-medium">{t('floating_prompt.compose_title')}</h3>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -758,7 +761,7 @@ const FloatingPromptInputInner = (
                 value={prompt}
                 onChange={handleTextChange}
                 onPaste={handlePaste}
-                placeholder="Type your prompt here..."
+                placeholder={t('floating_prompt.compose_placeholder')}
                 className="min-h-[200px] resize-none"
                 disabled={disabled}
                 onDragEnter={handleDrag}
@@ -1001,7 +1004,7 @@ const FloatingPromptInputInner = (
                   onChange={handleTextChange}
                   onKeyDown={handleKeyDown}
                   onPaste={handlePaste}
-                  placeholder={dragActive ? "Drop images here..." : "Ask Claude anything..."}
+                  placeholder={dragActive ? t('floating_prompt.drag_placeholder') : t('floating_prompt.input_placeholder')}
                   disabled={disabled}
                   className={cn(
                     "min-h-[44px] max-h-[120px] resize-none pr-10",
@@ -1056,7 +1059,7 @@ const FloatingPromptInputInner = (
                 {isLoading ? (
                   <>
                     <Square className="h-4 w-4 mr-1" />
-                    Stop
+                    {t('floating_prompt.stop')}
                   </>
                 ) : (
                   <Send className="h-4 w-4" />
@@ -1065,7 +1068,7 @@ const FloatingPromptInputInner = (
             </div>
 
             <div className="mt-2 text-xs text-muted-foreground">
-              Press Enter to send, Shift+Enter for new line{projectPath?.trim() && ", @ to mention files, / for commands, drag & drop or paste images"}
+              {t('floating_prompt.send_hint', { projectPath: projectPath?.trim() })}
             </div>
           </div>
         </div>

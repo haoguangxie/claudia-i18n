@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/tooltip";
 import { api } from "@/lib/api";
 import { Toast, ToastContainer } from "./ui/toast";
+import { useTranslation } from "react-i18next";
 
 interface TableInfo {
   name: string;
@@ -81,6 +82,7 @@ interface QueryResult {
  * StorageTab component - A beautiful SQLite database viewer/editor
  */
 export const StorageTab: React.FC = () => {
+  const { t } = useTranslation();
   const [tables, setTables] = useState<TableInfo[]>([]);
   const [selectedTable, setSelectedTable] = useState<string>("");
   const [tableData, setTableData] = useState<TableData | null>(null);
@@ -335,7 +337,7 @@ export const StorageTab: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Database className="h-4 w-4 text-primary" />
-              <h3 className="text-sm font-semibold">Database Storage</h3>
+              <h3 className="text-sm font-semibold">{t('storage_tab.title')}</h3>
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -345,7 +347,7 @@ export const StorageTab: React.FC = () => {
                 className="gap-2 h-8 text-xs"
               >
                 <Terminal className="h-3 w-3" />
-                SQL Query
+                {t('storage_tab.sql_query')}
               </Button>
               <Button
                 variant="destructive"
@@ -354,7 +356,7 @@ export const StorageTab: React.FC = () => {
                 className="gap-2 h-8 text-xs"
               >
                 <RefreshCw className="h-3 w-3" />
-                Reset DB
+                {t('storage_tab.reset_db')}
               </Button>
             </div>
           </div>
@@ -363,7 +365,7 @@ export const StorageTab: React.FC = () => {
           <div className="flex items-center gap-3">
             <Select value={selectedTable} onValueChange={setSelectedTable}>
               <SelectTrigger className="w-[200px] h-8 text-xs">
-                <SelectValue placeholder="Select a table">
+                <SelectValue placeholder={t('storage_tab.select_table')}>
                   {selectedTable && (
                     <div className="flex items-center gap-2">
                       <Table className="h-3 w-3" />
@@ -379,6 +381,7 @@ export const StorageTab: React.FC = () => {
                       <span>{table.name}</span>
                       <span className="text-[10px] text-muted-foreground ml-2">
                         {table.row_count} rows
+                        {t('storage_tab.rows', { count: table.row_count })}
                       </span>
                     </div>
                   </SelectItem>
@@ -389,7 +392,7 @@ export const StorageTab: React.FC = () => {
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
               <Input
-                placeholder="Search in table..."
+                placeholder={t('storage_tab.search_placeholder')}
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 className="pl-8 h-8 text-xs"
@@ -404,7 +407,7 @@ export const StorageTab: React.FC = () => {
                 className="gap-2 h-8 text-xs"
               >
                 <Plus className="h-3 w-3" />
-                New Row
+                {t('storage_tab.new_row')}
               </Button>
             )}
           </div>
@@ -435,7 +438,7 @@ export const StorageTab: React.FC = () => {
                     </th>
                   ))}
                   <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground">
-                    Actions
+                    {t('storage_tab.actions')}
                   </th>
                 </tr>
               </thead>
@@ -518,9 +521,7 @@ export const StorageTab: React.FC = () => {
           {tableData.total_pages > 1 && (
             <div className="flex items-center justify-between p-3 border-t">
               <div className="text-xs text-muted-foreground">
-                Showing {(currentPage - 1) * pageSize + 1} to{" "}
-                {Math.min(currentPage * pageSize, tableData.total_rows)} of{" "}
-                {tableData.total_rows} rows
+                {t('storage_tab.showing_rows', { from: (currentPage - 1) * pageSize + 1, to: Math.min(currentPage * pageSize, tableData.total_rows), total: tableData.total_rows })}
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -531,10 +532,10 @@ export const StorageTab: React.FC = () => {
                   className="h-7 text-xs"
                 >
                   <ChevronLeft className="h-3 w-3" />
-                  Previous
+                  {t('storage_tab.previous')}
                 </Button>
                 <div className="text-xs">
-                  Page {currentPage} of {tableData.total_pages}
+                  {t('storage_tab.page_of', { current: currentPage, total: tableData.total_pages })}
                 </div>
                 <Button
                   variant="outline"

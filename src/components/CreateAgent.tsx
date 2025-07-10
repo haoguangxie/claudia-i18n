@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import MDEditor from "@uiw/react-md-editor";
 import { type AgentIconName } from "./CCAgents";
 import { IconPicker, ICON_MAP } from "./IconPicker";
+import { useTranslation } from 'react-i18next';
 
 
 interface CreateAgentProps {
@@ -52,6 +53,7 @@ export const CreateAgent: React.FC<CreateAgentProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [showIconPicker, setShowIconPicker] = useState(false);
+  const { t } = useTranslation();
 
   const isEditMode = !!agent;
 
@@ -135,10 +137,10 @@ export const CreateAgent: React.FC<CreateAgentProps> = ({
             </Button>
             <div>
               <h2 className="text-lg font-semibold">
-                {isEditMode ? "Edit CC Agent" : "Create CC Agent"}
+                {isEditMode ? t('create_agent.edit_title') : t('create_agent.create_title')}
               </h2>
               <p className="text-xs text-muted-foreground">
-                {isEditMode ? "Update your Claude Code agent" : "Create a new Claude Code agent"}
+                {isEditMode ? t('create_agent.edit_subtitle') : t('create_agent.create_subtitle')}
               </p>
             </div>
           </div>
@@ -149,11 +151,16 @@ export const CreateAgent: React.FC<CreateAgentProps> = ({
             size="sm"
           >
             {saving ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {t('create_agent.saving')}
+              </>
             ) : (
-              <Save className="mr-2 h-4 w-4" />
+              <>
+                <Save className="mr-2 h-4 w-4" />
+                {t('create_agent.save')}
+              </>
             )}
-            {saving ? "Saving..." : "Save"}
           </Button>
         </motion.div>
         
@@ -279,25 +286,25 @@ export const CreateAgent: React.FC<CreateAgentProps> = ({
 
               {/* Default Task */}
               <div className="space-y-2">
-                <Label htmlFor="default-task">Default Task (Optional)</Label>
+                <Label htmlFor="default-task">{t('create_agent.default_task_label')}</Label>
                 <Input
                   id="default-task"
                   type="text"
-                  placeholder="e.g., Review this code for security issues"
+                  placeholder={t('create_agent.default_task_placeholder')}
                   value={defaultTask}
                   onChange={(e) => setDefaultTask(e.target.value)}
                   className="max-w-md"
                 />
                 <p className="text-xs text-muted-foreground">
-                  This will be used as the default task placeholder when executing the agent
+                  {t('create_agent.default_task_desc')}
                 </p>
               </div>
 
               {/* System Prompt Editor */}
               <div className="space-y-2">
-                <Label>System Prompt</Label>
+                <Label>{t('create_agent.system_prompt_label')}</Label>
                 <p className="text-xs text-muted-foreground mb-2">
-                  Define the behavior and capabilities of your CC Agent
+                  {t('create_agent.system_prompt_desc')}
                 </p>
                 <div className="rounded-lg border border-border overflow-hidden shadow-sm" data-color-mode="dark">
                   <MDEditor

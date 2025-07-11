@@ -1,53 +1,67 @@
-# 贡献指南（中文）
+# 欢迎贡献者
 
-感谢你对 Claudia 项目的关注与贡献！
+我们欢迎各种贡献来增强 Claudia 的功能并改进其性能。要报告 Bug，请创建一个 [GitHub issue](https://github.com/getAsterisk/claudia/issues)。
 
-## 如何贡献
-1. **Fork 本仓库**，并创建你的分支：
-   - 功能开发：`feature/xxx`
-   - Bug 修复：`fix/xxx`
-   - 文档改进：`docs/xxx`
-2. **保持分支与主仓库 develop 分支同步**。
-3. **提交前请确保所有测试通过**。
-4. **提交 Pull Request（PR）**，并简要描述你的更改内容。
-5. 至少一位维护者审核通过后合并。
+> 在贡献之前，请查看现有的 issues 和 pull requests，看看是否有人已经在处理类似的问题。这样可以避免重复工作。
 
-## 分支管理
-- `main`：生产环境主分支，仅合并 release/hotfix。
-- `develop`：开发主分支，日常开发合并目标。
-- `feature/*`：新功能开发分支。
-- `release/*`：发布准备分支。
-- `hotfix/*`：紧急修复分支。
+要贡献代码，请按照以下步骤操作：
 
-## 提交规范
-- 使用 [Conventional Commits](https://www.conventionalcommits.org/zh-hans/v1.0.0/) 风格：
-  - feat: 新功能
-  - fix: 修复 bug
-  - docs: 文档
-  - style: 格式
-  - refactor: 重构
-  - test: 测试
-  - chore: 构建/工具
-- 示例：
-  ```
-  feat(agent): 支持多语言切换
-  fix(storage): 修复表格分页 bug
-  docs: 完善 README.md
-  ```
+1. 在 GitHub 上 Fork Claudia 仓库。
+2. 为您的功能或 Bug 修复创建一个新分支。
+3. 进行更改并确保代码通过所有测试。
+4. 提交一个描述您的更改及其好处的 pull request。
 
-## 代码风格
-- 前端：遵循 [ESLint](https://eslint.org/) + [Prettier](https://prettier.io/) 规范
-- 后端（Rust）：遵循 [rustfmt](https://github.com/rust-lang/rustfmt) 格式化
-- 变量/函数/文件命名需语义清晰
-- 复杂逻辑请添加注释
+## Pull Request 指南
 
-## Issue 与 PR
-- Issue 请尽量详细描述问题、复现步骤、期望结果
-- PR 请关联相关 Issue（如有），并说明变更动机
-- 维护者会定期 review 并合并
+提交 pull request 时，请遵循以下指南：
 
-## 其他建议
-- 欢迎补充文档、完善测试、提出新想法！
-- 如有疑问可在 Issue 区留言或联系维护者。
+1. **标题**：请包含以下前缀：
+   - `Feature:` 用于新功能
+   - `Fix:` 用于 bug 修复
+   - `Docs:` 用于文档更改
+   - `Refactor:` 用于代码重构
+   - `Improve:` 用于性能改进
+   - `Other:` 用于其他更改
 
-再次感谢你的贡献！ 
+   例如：
+   - `Feature: 添加了自定义代理超时配置`
+   - `Fix: 解决了会话列表滚动问题`
+
+2. **描述**：在 pull request 中提供清晰详细的更改描述。解释您要解决的问题、您采取的方法，以及您的更改可能带来的任何副作用或限制。
+
+3. **文档**：更新相关文档以反映您的更改。这包括 README 文件、代码注释和任何其他相关文档。
+
+4. **依赖项**：如果您的更改需要新的依赖项，请确保它们已正确记录并添加到 `package.json` 或 `Cargo.toml` 文件中。
+
+5. 如果 pull request 不符合上述指南，可能会在不合并的情况下被关闭。
+
+**注意**：请确保在创建 pull request 之前您拥有最新版本的代码。如果您有现有的 fork，只需将您的 fork 与 Claudia 仓库的最新版本同步即可。
+
+## 编码标准
+
+### 前端（React/TypeScript）
+- 所有新代码都使用 TypeScript
+- 遵循使用 hooks 的函数式组件
+- 使用 Tailwind CSS 进行样式设计
+- 为导出的函数和组件添加 JSDoc 注释
+
+### 后端（Rust）
+- 遵循 Rust 标准规范
+- 使用 `cargo fmt` 进行格式化
+- 使用 `cargo clippy` 进行代码检查
+- 明确处理所有 `Result` 类型
+- 使用 `///` 注释添加全面的文档
+
+### 安全要求
+- 验证来自前端的所有输入
+- 对数据库操作使用预处理语句
+- 永不记录敏感数据（令牌、密码等）
+- 对所有配置使用安全默认值
+
+## 测试
+- 为新功能添加测试
+- 确保所有现有测试通过
+- 对 Rust 代码运行 `cargo test`
+- 提交前手动测试应用程序
+
+请遵守编码规范，保持清晰的文档，并为您的贡献提供全面的测试。 

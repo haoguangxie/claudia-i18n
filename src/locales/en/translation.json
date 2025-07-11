@@ -4,6 +4,13 @@
     "agents": "CC Agents",
     "projects": "CC Projects"
   },
+  "projects": {
+    "description": "Browse your Claude Code sessions",
+    "new_session": "New Claude Code session"
+  },
+  "navigation": {
+    "back_to_home": "Back to Home"
+  },
   "logout": "Logout",
   "topbar": {
     "usage_dashboard": "Usage Dashboard",

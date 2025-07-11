@@ -11,8 +11,8 @@ i18n
       en: { translation: enTranslation },
       zh: { translation: zhTranslation }
     },
-    lng: 'en', // 默认语言为中文
-    fallbackLng: 'en', // 优先回退到中文
+    lng: 'zh', // 默认语言为中文
+    fallbackLng: 'zh', // 优先回退到中文
     interpolation: {
       escapeValue: false
     }

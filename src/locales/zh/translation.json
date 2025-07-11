@@ -4,6 +4,13 @@
     "agents": "CC 智能体",
     "projects": "CC 项目"
   },
+  "projects": {
+    "description": "浏览您的 Claude Code 会话",
+    "new_session": "新建 Claude Code 会话"
+  },
+  "navigation": {
+    "back_to_home": "返回首页"
+  },
   "logout": "退出登录",
   "topbar": {
     "usage_dashboard": "用量统计",

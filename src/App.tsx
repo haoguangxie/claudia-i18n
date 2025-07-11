@@ -299,12 +299,12 @@ function App() {
                   onClick={() => handleViewChange("welcome")}
                   className="mb-4"
                 >
-                  ← Back to Home
+                  ← {t('navigation.back_to_home')}
                 </Button>
                 <div className="mb-4">
-                  <h1 className="text-3xl font-bold tracking-tight">CC Projects</h1>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Browse your Claude Code sessions
+                                      <h1 className="text-3xl font-bold tracking-tight">{t('welcome.projects')}</h1>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                    {t('projects.description')}
                   </p>
                 </div>
               </motion.div>
@@ -366,7 +366,7 @@ function App() {
                           className="w-full max-w-md"
                         >
                           <Plus className="mr-2 h-4 w-4" />
-                          New Claude Code session
+                          {t('projects.new_session')}
                         </Button>
                       </motion.div>
 

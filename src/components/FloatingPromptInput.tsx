@@ -192,7 +192,24 @@ const FloatingPromptInputInner = (
   const expandedTextareaRef = useRef<HTMLTextAreaElement>(null);
   const unlistenDragDropRef = useRef<(() => void) | null>(null);
 
-  const { t } = useTranslation();
+  // 添加安全检查，确保t函数存在
+  // 在i18n未初始化时提供回退值，防止"Can't find variable: t"错误
+  const { t: rawT } = useTranslation();
+  const t = rawT || ((key: string) => {
+    const defaultMessages: {[key: string]: string} = {
+      'floating_prompt.drag_placeholder': 'Drag files here to attach...',
+      'floating_prompt.input_placeholder': 'Enter prompt, / for commands, @ for files...',
+      'floating_prompt.stop': 'Stop',
+      'floating_prompt.send_hint': 'Enter to send, / for commands, @ for files. Project: {{projectPath}}'
+    };
+    // 如果有占位符参数需要替换，这里做简单处理
+    const template = defaultMessages[key] || key;
+    // 只处理简单占位符情况
+    if (arguments.length > 1 && typeof arguments[1] === 'object') {
+      return template.replace(/\{\{(\w+)\}\}/g, (_, name) => arguments[1][name] || '');
+    }
+    return template;
+  });
 
   // Expose a method to add images programmatically
   React.useImperativeHandle(

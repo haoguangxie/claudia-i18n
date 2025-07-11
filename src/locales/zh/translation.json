@@ -25,6 +25,28 @@
     "select_installation": "选择 Claude 安装路径",
     "install_claude": "安装 Claude Code"
   },
+  "project_settings": {
+    "back": "返回",
+    "title": "项目设置",
+    "tab_commands": "斜杠命令",
+    "tab_project_hooks": "项目钩子",
+    "tab_local_hooks": "本地钩子",
+    "project_slash_commands": "项目斜杠命令",
+    "project_slash_commands_desc": "创建专属于本项目的命令，这些命令仅在该项目中有效。",
+    "committed_to_vc": "已提交到版本控制",
+    "new_command": "新建命令",
+    "no_project_commands": "暂无项目命令",
+    "create_first_command": "创建你的第一个项目命令",
+    "project_hooks": "项目钩子",
+    "project_hooks_desc": "配置应用于本项目所有 Claude Code 会话的钩子，存储于 ",
+    "local_hooks": "本地钩子",
+    "local_hooks_desc": "配置仅在本机应用的机器专用钩子，存储于 ",
+    "not_committed_to_vc": "未提交到版本控制",
+    "local_settings_not_in_gitignore": "本地设置文件未加入 .gitignore。建议添加以避免提交机器专用设置。",
+    "add_to_gitignore": "添加到 .gitignore",
+    "added_to_gitignore": "已成功将本地设置添加到 .gitignore",
+    "failed_to_update_gitignore": "更新 .gitignore 文件失败"
+  },
   "agent_execution": {
     "task": "任务",
     "task_placeholder": "请输入代理任务",
@@ -93,7 +115,9 @@
     "delete_command_confirmation": "确定要删除此命令吗？",
     "delete_command_warning": "此操作不可撤销，命令文件将被永久删除。",
     "deleting": "删除中...",
-    "delete": "删除"
+    "delete": "删除",
+    "project_title": "项目斜杠命令",
+    "project_subtitle": "创建专属于本项目的命令"
   },
   "floating_prompt": {
     "compose_title": "撰写提示词",

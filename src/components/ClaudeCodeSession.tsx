@@ -350,9 +350,23 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
         // Store raw JSONL
         setRawJsonlOutput(prev => [...prev, event.payload]);
         
-        // Parse and display
+        // Parse and display with deduplication
         const message = JSON.parse(event.payload) as ClaudeStreamMessage;
-        setMessages(prev => [...prev, message]);
+        setMessages(prev => {
+          // Simple deduplication based on message content and type
+          const messageKey = `${message.type}-${JSON.stringify(message.message || message)}`;
+          const hasExistingMessage = prev.some(existingMsg => {
+            const existingKey = `${existingMsg.type}-${JSON.stringify(existingMsg.message || existingMsg)}`;
+            return existingKey === messageKey;
+          });
+          
+          if (hasExistingMessage) {
+            console.log('[ClaudeCodeSession] Skipping duplicate message in reconnect:', messageKey);
+            return prev;
+          }
+          
+          return [...prev, message];
+        });
       } catch (err) {
         console.error("Failed to parse message:", err, event.payload);
       }
@@ -460,6 +474,10 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
         const attachSessionSpecificListeners = async (sid: string) => {
           console.log('[ClaudeCodeSession] Attaching session-specific listeners for', sid);
 
+          // First, cleanup existing generic listeners to prevent duplicates
+          unlistenRefs.current.forEach((u) => u());
+          unlistenRefs.current = [];
+
           const specificOutputUnlisten = await listen<string>(`claude-output:${sid}`, (evt) => {
             handleStreamMessage(evt.payload);
           });
@@ -474,8 +492,7 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
             processComplete(evt.payload);
           });
 
-          // Replace existing unlisten refs with these new ones (after cleaning up)
-          unlistenRefs.current.forEach((u) => u());
+          // Store the new session-specific listeners
           unlistenRefs.current = [specificOutputUnlisten, specificErrorUnlisten, specificCompleteUnlisten];
         };
 
@@ -517,7 +534,23 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
             setRawJsonlOutput((prev) => [...prev, payload]);
 
             const message = JSON.parse(payload) as ClaudeStreamMessage;
-            setMessages((prev) => [...prev, message]);
+            
+            // Add message with deduplication logic
+            setMessages((prev) => {
+              // Simple deduplication based on message content and type
+              const messageKey = `${message.type}-${JSON.stringify(message.message || message)}`;
+              const hasExistingMessage = prev.some(existingMsg => {
+                const existingKey = `${existingMsg.type}-${JSON.stringify(existingMsg.message || existingMsg)}`;
+                return existingKey === messageKey;
+              });
+              
+              if (hasExistingMessage) {
+                console.log('[ClaudeCodeSession] Skipping duplicate message:', messageKey);
+                return prev;
+              }
+              
+              return [...prev, message];
+            });
           } catch (err) {
             console.error('Failed to parse message:', err, payload);
           }
@@ -527,7 +560,8 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
         const processComplete = async (success: boolean) => {
           setIsLoading(false);
           hasActiveSessionRef.current = false;
-          isListeningRef.current = false; // Reset listening state
+          // Note: Don't reset isListeningRef.current = false here immediately
+          // Let the cleanup happen when new prompts are sent or component unmounts
 
           if (effectiveSession && success) {
             try {
@@ -557,10 +591,16 @@ export const ClaudeCodeSession: React.FC<ClaudeCodeSessionProps> = ({
             const [nextPrompt, ...remainingPrompts] = queuedPromptsRef.current;
             setQueuedPrompts(remainingPrompts);
             
+            // Reset listening state before processing next prompt
+            isListeningRef.current = false;
+            
             // Small delay to ensure UI updates
             setTimeout(() => {
               handleSendPrompt(nextPrompt.prompt, nextPrompt.model);
             }, 100);
+          } else {
+            // No more queued prompts, safe to reset listening state
+            isListeningRef.current = false;
           }
         };
 

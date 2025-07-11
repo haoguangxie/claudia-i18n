@@ -262,7 +262,13 @@ export function AgentRunOutputViewer({
         isInitialLoadRef.current = false;
       }, 100);
 
-      // Set up live event listeners with run ID isolation
+      // Use a Set for faster duplicate checking
+      const seenPayloads = useRef(new Set<string>());
+      // Initialize set with existing rawJsonlOutput on mount
+      useEffect(() => {
+        seenPayloads.current = new Set(rawJsonlOutput);
+      }, []);
+
       const outputUnlisten = await listen<string>(`agent-output:${run.id}`, (event) => {
         try {
           // Skip messages during initial load phase
@@ -270,7 +276,16 @@ export function AgentRunOutputViewer({
             console.log('[AgentRunOutputViewer] Skipping message during initial load');
             return;
           }
-          
+
+          // Skip if this exact payload was already received
+          if (seenPayloads.current.has(event.payload)) {
+            console.log('[AgentRunOutputViewer] Skipping duplicate payload');
+            return;
+          }
+
+          // Add to seen set
+          seenPayloads.current.add(event.payload);
+
           // Store raw JSONL
           setRawJsonlOutput(prev => [...prev, event.payload]);
           

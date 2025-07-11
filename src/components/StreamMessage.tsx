@@ -79,7 +79,10 @@ const StreamMessageComponent: React.FC<StreamMessageProps> = ({ message, classNa
     return toolResults.get(toolId) || null;
   };
   
-  const { t } = useTranslation();
+  // 在大约第50行处，修改useTranslation的使用方式
+  // 添加安全检查，确保t函数存在
+  const { t: rawT } = useTranslation();
+  const t = rawT || ((key: string) => key);
 
   try {
     // Skip rendering for meta messages that don't have meaningful content

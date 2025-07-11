@@ -25,6 +25,28 @@
     "select_installation": "Select Claude Installation",
     "install_claude": "Install Claude Code"
   },
+  "project_settings": {
+    "back": "Back",
+    "title": "Project Settings",
+    "tab_commands": "Slash Commands",
+    "tab_project_hooks": "Project Hooks",
+    "tab_local_hooks": "Local Hooks",
+    "project_slash_commands": "Project Slash Commands",
+    "project_slash_commands_desc": "Create commands specific to this project that are only available within this project.",
+    "committed_to_vc": "committed to version control",
+    "new_command": "New Command",
+    "no_project_commands": "No project commands created yet",
+    "create_first_command": "Create your first project command",
+    "project_hooks": "Project Hooks",
+    "project_hooks_desc": "Configure hooks that are applied to all Claude Code sessions in this project and stored in ",
+    "local_hooks": "Local Hooks",
+    "local_hooks_desc": "Configure machine-specific hooks that are only applied on this computer and stored in ",
+    "not_committed_to_vc": "not committed to version control",
+    "local_settings_not_in_gitignore": "Local settings file is not in .gitignore. Consider adding it to avoid committing machine-specific settings.",
+    "add_to_gitignore": "Add to .gitignore",
+    "added_to_gitignore": "Local settings added to .gitignore successfully",
+    "failed_to_update_gitignore": "Failed to update .gitignore file"
+  },
   "agent_execution": {
     "task": "Task",
     "task_placeholder": "Enter the task for the agent",
@@ -63,6 +85,8 @@
   "slash_commands": {
     "title": "Slash Commands",
     "subtitle": "Create custom commands to streamline your workflow",
+    "project_title": "Project Slash Commands",
+    "project_subtitle": "Create commands specific to this project",
     "new_command": "New Command",
     "search_placeholder": "Search commands...",
     "all_commands": "All Commands",
